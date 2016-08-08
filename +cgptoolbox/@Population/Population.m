@@ -53,9 +53,29 @@ classdef Population
             for i = 1:SIZE.POPULATION - 1
                 this.solutions_{i} = cgptoolbox.Genotype(CONFIG, SIZE, STRUCTURE, inputs, functions, parameters);
 
-                if this.solutions_{i}.fitness() >= this.fittest_.fitness()
-                    % assign new fittest
-                    this.fittest_ = this.solutions_{i};
+                absolute_value = this.solutions_{i}.fitness();
+                fitness_solution = this.fittest_.fitness();
+                switch CONFIG.fitness_operator
+                    case '>='
+                        if absolute_value >= fitness_solution
+                            this.fittest_ = this.solutions_{i};
+                        end
+                    case '<='
+                        if absolute_value <= fitness_solution
+                            this.fittest_ = this.solutions_{i};
+                        end
+                    case '>'
+                        if absolute_value > fitness_solution
+                            this.fittest_ = this.solutions_{i};
+                        end
+                    case '<'
+                        if absolute_value < fitness_solution
+                            this.fittest_ = this.solutions_{i};
+                        end
+                    otherwise
+                        if absolute_value >= fitness_solution
+                            this.fittest_ = this.solutions_{i};
+                        end
                 end
             end
         end

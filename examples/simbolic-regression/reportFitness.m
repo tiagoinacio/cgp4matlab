@@ -23,20 +23,20 @@ function reportFitness(SIZE, STRUCTURE, genes, active, inputs, fitness, run, gen
 
     try
         x = sym('x');
-        str = eval(debugResults{active(end)})
-        str
-    catch
-    end
+        str = eval(debugResults{active(end)});
+        if mod(generation, 500)
+            generationFigure = figure;
+            set(generationFigure, 'name', ['Generation (', num2str(run), ')'],'numbertitle','off');
+            scatter(inputs.first.a.x, inputs.first.a.y);
 
-    generationFigure = figure;
-    set(generationFigure, 'name', ['Generation (', num2str(run), ')'],'numbertitle','off');
-    scatter(inputs.first.x0, inputs.first.y0);
-
-    hold on;
-    try
-        %lastGeneration = ezplot(str, [config.minX, config.maxX, config.minY, config.maxY]);
-        lastGeneration = ezplot(str, [-1, 1, 0, 0.2]);
-        legend([lastGeneration], ['Last Generation']);
+            hold on;
+            try
+                %lastGeneration = ezplot(str, [config.minX, config.maxX, config.minY, config.maxY]);
+                lastGeneration = ezplot(str, [-1, 1, 0, 0.2]);
+                legend([lastGeneration], ['Last Generation']);
+            catch
+            end
+        end
     catch
-    end
+    end 
 end

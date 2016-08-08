@@ -38,7 +38,7 @@ classdef Fitness
             %       Fitness(CONFIG, SIZE, STRUCTURE, genes, active, inputs, functions)
 
             % get the fitness value
-            this.fitness_ = CONFIG.fitness_function(SIZE, STRUCTURE, genes, active, inputs, functions, CONFIG.run);
+            this.fitness_ = CONFIG.fitness_function(SIZE, STRUCTURE, genes, active, inputs, functions, CONFIG.run, CONFIG.generation);
 
             % check if is a numeric value
             if ~isnumeric(this.fitness_)

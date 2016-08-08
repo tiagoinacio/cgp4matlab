@@ -58,11 +58,12 @@ classdef CGP < handle
             %           'last_node_output' {bool}    if the outputs are the
             %           last nodes of the genotype or are nodes randomly
             %           selected
-            %           'runs'           {integer} number of runs
-            %           'generations'    {integer} number of generations
-            %           'population'     {integer} population size
-            %           'best_fitness'     {integer} minimum fitness for a valid solution
-            %           'mutation'       {integer} probability of mutation
+            %           'runs'             {integer} number of runs
+            %           'generations'      {integer} number of generations
+            %           'population'       {integer} population size
+            %           'fitness_solution' {integer} minimum fitness for a valid solution
+            %           'fitness_operator' {string} operator to be used for comparision with the solution_fitness
+            %           'mutation'         {integer} probability of mutation
             %
             %   Examples:
             %       CGP(struct( ...
@@ -70,12 +71,13 @@ classdef CGP < handle
             %           'columns', 16,
             %           'levels_back', 16,
             %           'outputs', 1,
-            %           'last-node-output', true,
+            %           'last_node_output', true,
             %           'rows', 4,
             %           'columns', 10,
             %           'levels_back', 5,
             %           'outputs', 10
-            %           'last_node_output', true
+            %           'fitness_solution', 1,
+            %           'fitness_operator', '>='
             %       ))
 
             this.validateCGP_(varargin);
@@ -97,7 +99,8 @@ classdef CGP < handle
             this.SIZE_.POPULATION = params.population;
             this.SIZE_.MUTATION = params.mutation;
             this.CONFIG_.last_node_output = params.last_node_output;
-            this.CONFIG_.solution_fitness = params.best_fitness;
+            this.CONFIG_.fitness_solution = params.fitness_solution;
+            this.CONFIG_.fitness_operator = params.fitness_operator;
         end
     end
 end

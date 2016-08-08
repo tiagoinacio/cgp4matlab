@@ -16,17 +16,16 @@ function notFound = solutionNotFound_(this, fitness_solution, fitness_operator)
     %       ea.solutionNotFound_(0.01, '>=');
     %       ea.solutionNotFound_(0.1, '<');
     
-    absolute_value = abs(this.fittest_.fitness());
+    
     switch fitness_operator
         case '>='
-            notFound = ~(absolute_value >= fitness_solution);
-        case '<='
-            notFound = ~(absolute_value <= fitness_solution);
-        case '>'
-            notFound = ~(absolute_value > fitness_solution);
-        case '<'
-            notFound = ~(absolute_value < fitness_solution);
+            
         otherwise
-            notFound = ~(absolute_value >= fitness_solution);
+            
+    end
+    if ( >= fitness_solution)
+        notFound = false;
+    else
+        notFound = true;
     end
 end

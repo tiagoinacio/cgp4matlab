@@ -14,7 +14,7 @@ classdef CGPConfigureSpec < matlab.unittest.TestCase
             'generations', 1000, ... % generations
             'population', 4,    ... % population
             'mutation', 0.1,  ... % mutation
-            'best_fitness', 0.01  ... % min fitness to solution found
+            'fitness_solution', 0.01  ... % min fitness to solution found
         );
 
         structureSmallerSizeMock = struct( ...
@@ -38,7 +38,7 @@ classdef CGPConfigureSpec < matlab.unittest.TestCase
             'generations', 1000, ... % generations
             'population', 4,    ... % population
             'mutation', 0.1,  ... % mutation
-            'best_fitness', 0.01  ... % min fitness to solution found
+            'fitness_solution', 0.01  ... % min fitness to solution found
         );
 
         structureWithoutGenerations = struct( ...
@@ -46,7 +46,7 @@ classdef CGPConfigureSpec < matlab.unittest.TestCase
             'fake_generations', 1000, ... % generations
             'population', 4,    ... % population
             'mutation', 0.1,  ... % mutation
-            'best_fitness', 0.01  ... % min fitness to solution found
+            'fitness_solution', 0.01  ... % min fitness to solution found
         );
 
         structureWithoutPopulation = struct( ...
@@ -54,7 +54,7 @@ classdef CGPConfigureSpec < matlab.unittest.TestCase
             'generations', 1000, ... % generations
             'fake_population', 4,    ... % population
             'mutation', 0.1,  ... % mutation
-            'best_fitness', 0.01  ... % min fitness to solution found
+            'fitness_solution', 0.01  ... % min fitness to solution found
         );
 
         structureWithoutMutation = struct( ...
@@ -62,7 +62,7 @@ classdef CGPConfigureSpec < matlab.unittest.TestCase
             'generations', 1000, ... % generations
             'population', 4,    ... % population
             'fake_mutation', 0.1,  ... % mutation
-            'best_fitness', 0.01  ... % min fitness to solution found
+            'fitness_solution', 0.01  ... % min fitness to solution found
         );
 
         structureWithoutMinFitness = struct( ...
@@ -70,7 +70,7 @@ classdef CGPConfigureSpec < matlab.unittest.TestCase
             'generations', 1000, ... % generations
             'population', 4,    ... % population
             'mutation', 0.1,  ... % mutation
-            'fake_best_fitness', 0.01  ... % min fitness to solution found
+            'fake_fitness_solution', 0.01  ... % min fitness to solution found
         );
 
         structureRunsNotInteger = struct( ...
@@ -78,7 +78,7 @@ classdef CGPConfigureSpec < matlab.unittest.TestCase
             'generations', 1000, ... % generations
             'population', 4,    ... % population
             'mutation', 0.1,  ... % mutation
-            'best_fitness', 0.01  ... % min fitness to solution found
+            'fitness_solution', 0.01  ... % min fitness to solution found
         );
 
         structureRunsNotPositive = struct( ...
@@ -86,7 +86,7 @@ classdef CGPConfigureSpec < matlab.unittest.TestCase
             'generations', 1000, ... % generations
             'population', 4,    ... % population
             'mutation', 0.1,  ... % mutation
-            'best_fitness', 0.01  ... % min fitness to solution found
+            'fitness_solution', 0.01  ... % min fitness to solution found
         );
 
         structureGenerationsNotInteger = struct( ...
@@ -94,7 +94,7 @@ classdef CGPConfigureSpec < matlab.unittest.TestCase
             'generations', '1000', ... % generations
             'population', 4,    ... % population
             'mutation', 0.1,  ... % mutation
-            'best_fitness', 0.01  ... % min fitness to solution found
+            'fitness_solution', 0.01  ... % min fitness to solution found
         );
 
         structureGenerationsNotPositive = struct( ...
@@ -102,7 +102,7 @@ classdef CGPConfigureSpec < matlab.unittest.TestCase
             'generations', -1, ... % generations
             'population', 4,    ... % population
             'mutation', 0.1,  ... % mutation
-            'best_fitness', 0.01  ... % min fitness to solution found
+            'fitness_solution', 0.01  ... % min fitness to solution found
         );
 
         structurePopulationNotInteger = struct( ...
@@ -110,7 +110,7 @@ classdef CGPConfigureSpec < matlab.unittest.TestCase
             'generations', 1000, ... % generations
             'population', '4',    ... % population
             'mutation', 0.1,  ... % mutation
-            'best_fitness', 0.01  ... % min fitness to solution found
+            'fitness_solution', 0.01  ... % min fitness to solution found
         );
 
         structurePopulationNotPositive = struct( ...
@@ -118,7 +118,7 @@ classdef CGPConfigureSpec < matlab.unittest.TestCase
             'generations', 1, ... % generations
             'population', -4,    ... % population
             'mutation', 0.1,  ... % mutation
-            'best_fitness', 0.01  ... % min fitness to solution found
+            'fitness_solution', 0.01  ... % min fitness to solution found
         );
 
         structureMutationNotNumber = struct( ...
@@ -126,7 +126,7 @@ classdef CGPConfigureSpec < matlab.unittest.TestCase
             'generations', 1000, ... % generations
             'population', 4,    ... % population
             'mutation', '0.1',  ... % mutation
-            'best_fitness', 0.01  ... % min fitness to solution found
+            'fitness_solution', 0.01  ... % min fitness to solution found
         );
 
         structureMutationNotPositive = struct( ...
@@ -134,7 +134,7 @@ classdef CGPConfigureSpec < matlab.unittest.TestCase
             'generations', 1, ... % generations
             'population', 4,    ... % population
             'mutation', -1,  ... % mutation
-            'best_fitness', 0.01  ... % min fitness to solution found
+            'fitness_solution', 0.01  ... % min fitness to solution found
         );
 
         structureMinFitnessNotNumber = struct( ...
@@ -142,7 +142,7 @@ classdef CGPConfigureSpec < matlab.unittest.TestCase
             'generations', 1000, ... % generations
             'population', 4,    ... % population
             'mutation', 0.1,  ... % mutation
-            'best_fitness', '0.01'  ... % min fitness to solution found
+            'fitness_solution', '0.01'  ... % min fitness to solution found
         );
 
         structureMinFitnessNotPositive = struct( ...
@@ -150,7 +150,7 @@ classdef CGPConfigureSpec < matlab.unittest.TestCase
             'generations', 1, ... % generations
             'population', 4,    ... % population
             'mutation', 1,  ... % mutation
-            'best_fitness', -0.01  ... % min fitness to solution found
+            'fitness_solution', -0.01  ... % min fitness to solution found
         );
     end
 

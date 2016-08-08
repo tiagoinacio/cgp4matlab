@@ -46,7 +46,7 @@ classdef EA < handle
             %       EA(CONFIG, SIZE, STRUCTURE, inputs, functions, parameters, callbacks)
 
             this.run_ = 1;
-            
+
             this.output_ = repmat( ...
                 struct( ...
                     'SIZE', SIZE, ...
@@ -58,14 +58,14 @@ classdef EA < handle
                 ), ...
                 SIZE.RUNS, 1 ...
             );
-            
+
             while (this.run_ <= SIZE.RUNS)
 
                 this.setupNewRun_(CONFIG, SIZE, STRUCTURE, inputs, functions, parameters);
-                
+
                 this.fitness_(this.generation_) = this.fittest_.fitness();
-                
-                while this.solutionNotFound_(CONFIG.solution_fitness) && this.maxGenerationNotReached_(SIZE.GENERATIONS)
+
+                while this.solutionNotFound_(CONFIG.fitness_solution, CONFIG.fitness_operator) && this.maxGenerationNotReached_(SIZE.GENERATIONS)
 
                     % create new generation
                     generation = cgptoolbox.Generation( ...
@@ -84,10 +84,10 @@ classdef EA < handle
 
                     % assign fitness for this generation
                     this.fitness_(this.generation_) = this.fittest_.fitness();
-                    
+
                     genes = this.fittest_.genes();
                     active = this.fittest_.active();
-                    
+
                     if this.generation_ - 1 ~= 0 && this.fitness_(this.generation_) > this.fitness_(this.generation_ - 1)
                         if isfield(callbacks, 'FITTEST_SOLUTION')
                             callbacks.FITTEST_SOLUTION(          ...
@@ -99,7 +99,7 @@ classdef EA < handle
                                 active,                          ...
                                 genes,                           ...
                                 STRUCTURE.FUNCTIONS,             ...
-                                STRUCTURE.CONNECTIONS            ...    
+                                STRUCTURE.CONNECTIONS            ...
                             );
                         end
                     end
@@ -119,13 +119,14 @@ classdef EA < handle
                     end
 
                     this.generation_ = this.generation_ + 1;
+                    CONFIG.generation = this.generation_;
                 end
 
                 if isfield(callbacks, 'NEW_RUN')
                     if this.generation_ == 1
                         generation = 1;
                     else
-                        generation = this.generation_ - 1;  
+                        generation = this.generation_ - 1;
                     end
 
                     callbacks.NEW_RUN( ...

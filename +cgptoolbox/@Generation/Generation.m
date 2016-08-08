@@ -70,7 +70,7 @@ classdef Generation
                 );
                 
                 % if the solution generated is better than the previous, update the fittest solution
-                if (this.isThisSolutionFitterThanParent_(solution.fitness()))
+                if (this.isThisSolutionFitterThanParent_(solution.fitness(), CONFIG.fitness_operator))
                     if isfield(callbacks, 'FITTEST_SOLUTION_OF_GENERATION')
                         callbacks.FITTEST_SOLUTION_OF_GENERATION(...
                             'FITTEST_SOLUTION_OF_GENERATION', ...

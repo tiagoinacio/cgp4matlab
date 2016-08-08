@@ -4,7 +4,7 @@ function value = fitness(SIZE, STRUCTURE, genes, active, inputs, functions, run,
     nodesResult_ = zeros(1, SIZE.NODES);
 
     for j = 1:50
-        nodesResult_(1) = inputs.first.x0(j);
+        nodesResult_(1) = inputs.first.a.x(j);
         nodesResult_(2) = inputs.second;
 
         for i = SIZE.INPUTS + 1:size(active, 2)
@@ -25,16 +25,11 @@ function value = fitness(SIZE, STRUCTURE, genes, active, inputs, functions, run,
             nodesResult_(active(i)) = result;
         end
 
-        value = value + abs(nodesResult_(active(end)) - inputs.first.y0(j));
+        value = value + abs(nodesResult_(active(end)) - inputs.first.a.y(j));
     end
 
-    if value <= -100
-        value = 0;
-    else
-        value = 1 - (value / 100);
-    end
-    
-    if value > 0.5
+    if value < 3
+        value
         reportFitness(SIZE, STRUCTURE, genes, active, inputs, value, run, generation);
     end
 end

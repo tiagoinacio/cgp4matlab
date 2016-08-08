@@ -12,7 +12,8 @@ function validateCGP_(~, configuration)
     %   Validate if the struct has a field named 'runs'
     %   Validate if the struct has a field named 'generations'
     %   Validate if the struct has a field named 'population'
-    %   Validate if the struct has a field named 'best_fitness'
+    %   Validate if the struct has a field named 'fitness_solution'
+    %   Validate if the struct has a field named 'fitness_operator'
     %   Validate if the struct has a field named 'mutation'
     %   Validate if the name field is a string
     %   Validate if the rows field is a positive integer
@@ -22,16 +23,17 @@ function validateCGP_(~, configuration)
     %   Validate if the runs field is a positive integer
     %   Validate if the generations field is a positive integer
     %   Validate if the population field is a positive integer
-    %   Validate if the best_fitness field is a positive float
+    %   Validate if the fitness_solution field is a positive float
+    %   Validate if the fitness_operator is a char
     %   Validate if the mutation field is a positive float
     %
     %   Input:
     %       this   {CGP} instante of the class CGP
     %       inputs {struct} struct with CGP configuration
-    %           'rows'           {integer} number of rows
-    %           'columns'        {integer} number of columns
-    %           'levels_back'     {integer} number of levels back
-    %           'outputs'        {integer} number of outputs for the problem
+    %           'rows'             {integer} number of rows
+    %           'columns'          {integer} number of columns
+    %           'levels_back'      {integer} number of levels back
+    %           'outputs'          {integer} number of outputs for the problem
     %           'last_node_output' {bool} if the outputs are the last nodes
     %
     %   Examples:
@@ -44,7 +46,8 @@ function validateCGP_(~, configuration)
     %           'runs', 5,
     %           'generations', 1000,
     %           'population', 4,
-    %           'best_fitness', 0.01,
+    %           'fitness_value', 0.01,
+    %           'fitness_operator', '<=',
     %           'mutation', 0.1
     %       ))
     %
@@ -57,11 +60,12 @@ function validateCGP_(~, configuration)
     %           'runs', 5,
     %           'generations', 1000,
     %           'population', 4,
-    %           'best_fitness', 0.01,
+    %           'fitness_solution', 0.01,
+    %           'fitness_operator', '>',
     %           'mutation', 0.1
     %       ))
 
-    
+
 
     if length(configuration) ~= 1
         error('CGP:CGP:CGPOnlyTakesOneInputStructure', 'CGP only takes one input structure.');
@@ -70,10 +74,10 @@ function validateCGP_(~, configuration)
     if ~isstruct(configuration{1})
         error('CGP:CGP:InputMustBeAStructure', 'Input must be a structure.');
     end
-    
+
     inputs = configuration{1};
-    
-    if length(fieldnames(inputs)) ~= 10
+
+    if length(fieldnames(inputs)) ~= 11
         error( ...
             'CGP:CGP:InvalidSizeOfStructure', ...
             '\nPlease configure your CGP with:\n\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n', ...
@@ -187,7 +191,7 @@ function validateCGP_(~, configuration)
             '\nOutputs must be positive.' ...
         );
     end
-    
+
     if ~isfield(inputs, 'runs')
         error( ...
             'CGP:Configure:MissingRunsInStructureInput', ...
@@ -216,10 +220,17 @@ function validateCGP_(~, configuration)
         );
     end
 
-    if ~isfield(inputs, 'best_fitness')
+    if ~isfield(inputs, 'fitness_solution')
         error( ...
             'CGP:Configure:MissingMinimumFitnessInStructureInput', ...
             '\nPlease provide the threshold for a valid solution.' ...
+        );
+    end
+
+    if ~isfield(inputs, 'fitness_operator')
+        error( ...
+            'CGP:Configure:MissingGoalFitnessInStructureInput', ...
+            '\nPlease provide the operator to be used for comparison with the fitness solution.' ...
         );
     end
 
@@ -284,14 +295,22 @@ function validateCGP_(~, configuration)
     end
 
     % validate MinFitness
-    if ~isnumeric(inputs.best_fitness)
+    if ~isnumeric(inputs.fitness_solution)
         error( ...
             'CGP:Configure:MinFitnessMustBeANumber', ...
-            '\nMinimum Fitness must be number.' ...
+            '\nFitness Solution must be number.' ...
         );
     end
 
-    if inputs.best_fitness <= 0
+    % validate GoalFitness
+    if ~ischar(inputs.fitness_operator)
+        error( ...
+            'CGP:Configure:FitnessOperatorMustBeAChar', ...
+            '\nGoal Fitness Operator must be a char.' ...
+        );
+    end
+
+    if inputs.fitness_solution <= 0
         error( ...
             'CGP:Configure:MinFitnessMustBePositive', ...
             '\nPlease provide a positive fitness value.' ...
