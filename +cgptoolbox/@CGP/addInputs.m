@@ -9,11 +9,18 @@ function addInputs(this, varargin)
     %       varargin {struct} struct of variable size which contains the inputs to the CGP
     %
     %   Examples:
-    %       cgp.addInputs(1, 2, 3, ...)
+    %       cgp.addInputs(struct(
+    %           'a', 1,
+    %           'b', 2,
+    %           'c', 3
+    %       ))
     %
-    %       cgp.addInputs(A, B)
-    %
-    %       cgp.addInputs(A, myStruct, myArray, myMatrix)
+    %       cgp.addInputs(struct(
+    %           'a', otherStruct,
+    %           'b', someArray,
+    %           'c', anInteger
+    %           ...
+    %       ))
 
     this.SIZE_.INPUTS = length(fieldnames(varargin{1}));
     this.inputs_ = varargin{1};
