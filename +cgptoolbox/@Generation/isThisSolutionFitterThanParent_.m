@@ -15,8 +15,8 @@ function bool = isThisSolutionFitterThanParent_(this, solutionFitness, fitness_o
     %       generation.isThisSolutionFitterThanParent_(10, '>=');
     %       generation.isThisSolutionFitterThanParent_(0.2, '<');
 
-    absolute_value = abs(solutionFitness);
-    fitness_solution =  abs(this.fittest_.fitness());
+    absolute_value = solutionFitness;
+    fitness_solution =  this.fittest_.fitness();
     switch fitness_operator
         case '>='
             bool = absolute_value >= fitness_solution;

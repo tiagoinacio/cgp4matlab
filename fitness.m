@@ -1,10 +1,10 @@
 function value = fitness(SIZE, STRUCTURE, genes, active, inputs, functions, run, generation)
 
-    value = 0;
+    value = 0.0;
     nodesResult_ = zeros(1, SIZE.NODES);
 
     for j = 1:50
-        nodesResult_(1) = inputs.first.a.x(j);
+        nodesResult_(1) = inputs.first.x(j);
         nodesResult_(2) = inputs.second;
 
         for i = SIZE.INPUTS + 1:size(active, 2)
@@ -19,17 +19,16 @@ function value = fitness(SIZE, STRUCTURE, genes, active, inputs, functions, run,
             geneFn = genes(STRUCTURE.FUNCTIONS(active(i)));
             firstInput = nodesResult_(genes(STRUCTURE.CONNECTIONS{1}(active(i))));
             secondInput = nodesResult_(genes(STRUCTURE.CONNECTIONS{2}(active(i))));
-            
-            result = functions{geneFn}(firstInput, secondInput, params);
-            
-            nodesResult_(active(i)) = result;
+
+            nodesResult_(active(i)) = functions{geneFn}(firstInput, secondInput, params);
         end
 
-        value = value + abs(nodesResult_(active(end)) - inputs.first.a.y(j));
+        value = value + abs(nodesResult_(active(end)) - inputs.first.y(j));
+        %value = value + mean((inputs.first.y(j) - nodesResult_(active(end))).^2);
     end
 
-    if value < 3
-        value
+    if value < 0.3
+        fprintf('run %d - generation %d - %.12f', run, generation, value);
         reportFitness(SIZE, STRUCTURE, genes, active, inputs, value, run, generation);
     end
 end
