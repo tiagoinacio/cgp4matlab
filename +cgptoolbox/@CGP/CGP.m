@@ -101,6 +101,7 @@ classdef CGP < handle
             this.CONFIG_.last_node_output = params.last_node_output;
             this.CONFIG_.fitness_solution = params.fitness_solution;
             this.CONFIG_.fitness_operator = params.fitness_operator;
+            this.SIZE_.PARAMETERS = 0;
         end
     end
 end

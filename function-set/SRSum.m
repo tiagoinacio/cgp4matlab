@@ -1,3 +1,3 @@
-function result = SRSum(x, y, parameters)
+function result = SRSum(x, y)
     result = x + y;
 end
