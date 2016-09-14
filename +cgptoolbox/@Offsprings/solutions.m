@@ -4,10 +4,10 @@ function solutions_ = solutions(this)
     %   Return the private propertie `solutions_`
     %
     %   Input:
-    %       this {Population} instante of the class
+    %       this {Offsprings} instante of the class
     %
     %   Examples:
-    %       population.solutions()
+    %       offsprings.solutions()
 
     solutions_ = this.solutions_;
 end

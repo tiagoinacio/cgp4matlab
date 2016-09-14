@@ -60,7 +60,7 @@ classdef CGP < handle
             %           selected
             %           'runs'             {integer} number of runs
             %           'generations'      {integer} number of generations
-            %           'population'       {integer} population size
+            %           'offsprings'       {integer} offsprings size
             %           'fitness_solution' {integer} minimum fitness for a valid solution
             %           'fitness_operator' {string} operator to be used for comparision with the solution_fitness
             %           'mutation'         {integer} probability of mutation
@@ -96,9 +96,13 @@ classdef CGP < handle
             this.SIZE_.OUTPUTS = params.outputs;
             this.SIZE_.RUNS = params.runs;
             this.SIZE_.GENERATIONS = params.generations;
-            this.SIZE_.POPULATION = params.population;
+            this.SIZE_.OFFSPRINGS = params.offsprings;
             this.SIZE_.MUTATION = params.mutation;
-            this.CONFIG_.last_node_output = params.last_node_output;
+            if strcmp(params.output_type, 'last')
+                this.CONFIG_.last_node_output = true;
+            else
+                this.CONFIG_.last_node_output = false;
+            end
             this.CONFIG_.fitness_solution = params.fitness_solution;
             this.CONFIG_.fitness_operator = params.fitness_operator;
             this.SIZE_.PARAMETERS = 0;

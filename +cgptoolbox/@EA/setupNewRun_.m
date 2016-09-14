@@ -1,8 +1,8 @@
 function setupNewRun_(this, CONFIG, SIZE, STRUCTURE, inputs, functions, parameters)
     % setupNewRun_ initialize properties before execute a new run
     %   Initialize the fitness_ vector to all zeros
-    %   Instantiate the population
-    %   Get the fittest solution from the population
+    %   Instantiate the offsprings
+    %   Get the fittest solution from the offsprings
     %   Initialize the current generation to 1
     %
     %   Input:
@@ -21,8 +21,8 @@ function setupNewRun_(this, CONFIG, SIZE, STRUCTURE, inputs, functions, paramete
     this.fitness_    = zeros(1, SIZE.GENERATIONS);
     this.output_(this.run_).functions = functions;
 
-    % setup population
-    population       = cgptoolbox.Population(CONFIG, SIZE, STRUCTURE, inputs, functions, parameters);
-    this.population_ = population.solutions();
-    this.fittest_    = population.fittest();
+    % setup offsprings
+    offsprings       = cgptoolbox.Offsprings(CONFIG, SIZE, STRUCTURE, inputs, functions, parameters);
+    this.offsprings_ = offsprings.solutions();
+    this.fittest_    = offsprings.fittest();
 end

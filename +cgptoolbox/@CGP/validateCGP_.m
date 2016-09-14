@@ -11,7 +11,7 @@ function validateCGP_(~, configuration)
     %   Validate if the struct has a field named 'last-node-outputs'
     %   Validate if the struct has a field named 'runs'
     %   Validate if the struct has a field named 'generations'
-    %   Validate if the struct has a field named 'population'
+    %   Validate if the struct has a field named 'offsprings'
     %   Validate if the struct has a field named 'fitness_solution'
     %   Validate if the struct has a field named 'fitness_operator'
     %   Validate if the struct has a field named 'mutation'
@@ -22,7 +22,7 @@ function validateCGP_(~, configuration)
     %   Validate if the outputs field is a positive integer
     %   Validate if the runs field is a positive integer
     %   Validate if the generations field is a positive integer
-    %   Validate if the population field is a positive integer
+    %   Validate if the offsprings field is a positive integer
     %   Validate if the fitness_solution field is a positive float
     %   Validate if the fitness_operator is a char
     %   Validate if the mutation field is a positive float
@@ -45,7 +45,7 @@ function validateCGP_(~, configuration)
     %           'last_node_output', true,
     %           'runs', 5,
     %           'generations', 1000,
-    %           'population', 4,
+    %           'offsprings', 4,
     %           'fitness_value', 0.01,
     %           'fitness_operator', '<=',
     %           'mutation', 0.1
@@ -59,7 +59,7 @@ function validateCGP_(~, configuration)
     %           'last-node-output', true,
     %           'runs', 5,
     %           'generations', 1000,
-    %           'population', 4,
+    %           'offsprings', 4,
     %           'fitness_solution', 0.01,
     %           'fitness_operator', '>',
     %           'mutation', 0.1
@@ -89,10 +89,10 @@ function validateCGP_(~, configuration)
             );
     end
 
-    if ~isfield(inputs, 'last_node_output')
+    if ~isfield(inputs, 'output_type')
         error( ...
             'CGP:CGP:MissingLastNodeOutputInStructureInput', ...
-            '\nPlease provide the last node output option.' ...
+            '\nPlease provide the node output option.' ...
         );
     end
 
@@ -121,14 +121,6 @@ function validateCGP_(~, configuration)
         error( ...
             'CGP:CGP:MissingOutputsInStructureInput', ...
             '\nPlease provide a number of outputs' ...
-        );
-    end
-
-    % validate name input
-    if ~islogical(inputs.last_node_output)
-        error( ...
-            'CGP:CGP:LastNodeOutputMustBeABool', ...
-            '\nLast Node Output must be a boolean.' ...
         );
     end
 
@@ -206,10 +198,10 @@ function validateCGP_(~, configuration)
         );
     end
 
-    if ~isfield(inputs, 'population')
+    if ~isfield(inputs, 'offsprings')
         error( ...
-            'CGP:Configure:MissingPopulationInStructureInput', ...
-            '\nPlease provide the population size.' ...
+            'CGP:Configure:MissingOffspringsInStructureInput', ...
+            '\nPlease provide the offsprings size.' ...
         );
     end
 
@@ -264,18 +256,18 @@ function validateCGP_(~, configuration)
         );
     end
 
-    % validate population
-    if (~isa(inputs.population, 'double') && ~isa(inputs.population, 'integer')) || round(inputs.population) ~= inputs.population
+    % validate offsprings
+    if (~isa(inputs.offsprings, 'double') && ~isa(inputs.offsprings, 'integer')) || round(inputs.offsprings) ~= inputs.offsprings
         error( ...
-            'CGP:Configure:PopulationMustBeAnInteger', ...
-            '\nPopulation must be an integer.' ...
+            'CGP:Configure:OffspringsMustBeAnInteger', ...
+            '\nOffsprings must be an integer.' ...
         );
     end
 
-    if inputs.population < 1
+    if inputs.offsprings < 1
         error( ...
-            'CGP:Configure:PopulationMustBePositive', ...
-            '\nPlease provide a positive number of population.' ...
+            'CGP:Configure:OffspringsMustBePositive', ...
+            '\nPlease provide a positive number of offsprings.' ...
         );
     end
 

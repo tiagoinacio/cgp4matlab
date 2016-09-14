@@ -2,7 +2,7 @@ classdef Generation
     % Generation Class
     %   Run a Generation
     %
-    %   For each member in the population size:
+    %   For each member in the offsprings size:
     %       mutate the fittest solution of the previous generation
     %       if the newly mutated solution has better fitness than the previous, assign the fittest to this solution
     %   Fire the GENOTYPE callback
@@ -48,9 +48,9 @@ classdef Generation
 
             this.fittest_ = fittestFromPreviousGeneration;
 
-            % for each population member mutate and generate new solutions
-            for i = 1:SIZE.POPULATION
-                
+            % for each offspring mutate and generate new solutions
+            for i = 1:SIZE.OFFSPRINGS
+
                 if isfield(callbacks, 'NEW_SOLUTION_IN_GENERATION')
                     callbacks.NEW_SOLUTION_IN_GENERATION(...
                         'NEW_SOLUTION_IN_GENERATION', ...
@@ -68,7 +68,7 @@ classdef Generation
                     parameters, ...
                     callbacks ...
                 );
-                
+
                 % if the solution generated is better than the previous, update the fittest solution
                 if (this.isThisSolutionFitterThanParent_(solution.fitness(), CONFIG.fitness_operator))
                     if isfield(callbacks, 'FITTEST_SOLUTION_OF_GENERATION')
@@ -77,7 +77,7 @@ classdef Generation
                             i ...
                         );
                     end
-                    
+
                     this.fittest_ = solution;
                 end
 

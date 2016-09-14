@@ -1,19 +1,19 @@
-classdef Population
-    % Population Class
-    %   Create initial population of solutions
+classdef Offsprings
+    % Offsprings Class
+    %   Create initial offsprings of solutions
     %
     %   Initialize one genotype, and assign as the best fit.
-    %   Iterate through the population size to create new genotypes.
+    %   Iterate through the offsprings size to create new genotypes.
     %   If one genotype has better fitness than the current fittest,
     %   replace the former.
     %
-    %   Population Properties:
+    %   Offsprings Properties:
     %       solutions_  {Array}    array of solutions
-    %       fittest_    {Genotype} fittest solution of the population
+    %       fittest_    {Genotype} fittest solution of the offsprings
     %
-    %   Population Methods:
-    %       solutions {public} get all the solutions in the population
-    %       fittest   {public} get the fittest solution of the population
+    %   Offsprings Methods:
+    %       solutions {public} get all the solutions in the offsprings
+    %       fittest   {public} get the fittest solution of the offsprings
 
     properties (Access = private)
         solutions_
@@ -22,7 +22,7 @@ classdef Population
 
     methods (Access = public)
 
-        function this = Population( ...
+        function this = Offsprings( ...
             CONFIG,                 ...
             SIZE,                   ...
             STRUCTURE,              ...
@@ -30,9 +30,9 @@ classdef Population
             functions,              ...
             parameters              ...
         )
-            % Population Constructor
+            % Offsprings Constructor
             %
-            %   Generate n solutions according to the population size.
+            %   Generate n solutions according to the offsprings size.
             %   Choose the fittest.
             %
             %   Input:
@@ -50,7 +50,7 @@ classdef Population
             this.fittest_ = cgptoolbox.Genotype(CONFIG, SIZE, STRUCTURE, inputs, functions, parameters);
 
             % create the rest of the genotypes
-            for i = 1:SIZE.POPULATION - 1
+            for i = 1:SIZE.OFFSPRINGS - 1
                 this.solutions_{i} = cgptoolbox.Genotype(CONFIG, SIZE, STRUCTURE, inputs, functions, parameters);
 
                 absolute_value = this.solutions_{i}.fitness();

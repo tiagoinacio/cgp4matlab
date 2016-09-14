@@ -4,10 +4,10 @@ function fittest_ = fittest(this)
     %   Return the private propertie `fittest_`
     %
     %   Input:
-    %       this {Population} instante of the class
+    %       this {Offsprings} instante of the class
     %
     %   Examples:
-    %       population.fittest()
+    %       offsprings.fittest()
 
     fittest_ = this.fittest_;
 end

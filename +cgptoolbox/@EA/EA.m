@@ -13,7 +13,7 @@ classdef EA < handle
     %       run_        {integer}  the current run
     %       generation_ {integer}  the current generation
     %       fittest_    {Mutation} the current fittest solution
-    %       population_ {array}    the current population
+    %       offsprings_ {array}    the current offsprings
     %       fitness_    {array}    array of fitness values
     %
     %   Examples:
@@ -23,7 +23,7 @@ classdef EA < handle
         run_
         generation_
         fittest_
-        population_
+        offsprings_
         fitness_
         output_
     end
@@ -87,7 +87,7 @@ classdef EA < handle
 
                     genes = this.fittest_.genes();
                     active = this.fittest_.active();
-                    
+
                     if this.generation_ - 1 ~= 0
                         if strcmp(CONFIG.fitness_operator, '<=') || strcmp(CONFIG.fitness_operator, '<')
                             if this.fitness_(this.generation_) < this.fitness_(this.generation_ - 1)
@@ -123,7 +123,7 @@ classdef EA < handle
                             end
                         end
                     end
-                    
+
                     if isfield(callbacks, 'NEW_GENERATION')
                         callbacks.NEW_GENERATION(            ...
                             'NEW_GENERATION',                ...
