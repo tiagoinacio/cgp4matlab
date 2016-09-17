@@ -2,7 +2,7 @@ function reportFitness(SIZE, STRUCTURE, genes, active, inputs, fitness, run, gen
 
     formulas = cell(1, SIZE.NODES);
     formulas{1} = 'x';
-    formulas{2} = [num2str(inputs.second)];
+    formulas{2} = [num2str(inputs.scalar)];
     output = active(end);
 
 
@@ -43,7 +43,7 @@ function reportFitness(SIZE, STRUCTURE, genes, active, inputs, fitness, run, gen
 
         generationFigure = figure;
         set(generationFigure, 'name', ['Generation (', num2str(run), ')'],'numbertitle','off');
-        scatter(inputs.first.x, inputs.first.y);
+        scatter(inputs.points.x, inputs.points.y);
 
         hold on;
         try
