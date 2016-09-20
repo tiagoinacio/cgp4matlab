@@ -9,5 +9,5 @@ function value = get(this)
     %   Examples:
     %       output.get()
 
-    value = this.value_;
+    value = this.outputNode_;
 end

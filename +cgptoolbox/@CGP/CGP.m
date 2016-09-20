@@ -1,39 +1,7 @@
 classdef CGP < handle
-    % CGP Class
-    %   Provides access to an API to encode a program under a CGP
-    %   algorithm
-    %
-    %   The CGP constructor takes a struct as argumment
-    %   Instantiating a CGP object lets the user configure a few CGP
-    %   parameters, add the inputs for the CGP program, add callbacks to be
-    %   executed in each section for report, provide a fitness function, add
-    %   multiple functions to the function set, add parameters to the
-    %   genotype, and execute the algorithm.
-    %
-    %   Inheritance:
-    %       handle class
-    %
-    %   CGP Properties:
-    %       CONFIG_     - struct of configuration constants
-    %       SIZE_       - struct of size related constants
-    %       STRUCTURE_  - struct of constant genes
-    %       callbacks_  - struct of callbacks to be executed at each correspondent time
-    %       functions_  - array of functions which belong to the function set
-    %       inputs_     - array of cgp inputs
-    %       parameters_ - array of cgp parameters
-    %
-    %   CGP Methods:
-    %       addCallbacks         - add callbacks to the program
-    %       addFitnessFunction   - add function handle to be used as the fitness function
-    %       addFunctionsFromPath - add path of the function set
-    %       addInputs            - add inputs to the problem
-    %       addParameters        - add parameters to the genotype
-    %       train                - start the trainning process
 
     properties (Access = private)
-        CONFIG_
-        SIZE_
-        STRUCTURE_
+        config_
         callbacks_
         functions_
         inputs_
@@ -42,70 +10,398 @@ classdef CGP < handle
 
     methods (Access = public)
 
-        function this = CGP(varargin)
-            % CGP Constructor
+        function this = CGP (varargin)
+
+            if ~this.isValidConstructor_(varargin)
+                return;
+            end
+
+
+            this.parameters_ = struct.empty;
+
+            this.config_.sizes.connection_genes = 2;
+            this.config_.generation = 1;
+            this.config_.iteration = 1;
+            this.config_.run = 1;
+
+            params = varargin{1};
+            this.config_.sizes.rows = params.rows;
+            this.config_.sizes.columns = params.columns;
+            this.config_.sizes.levels_back = params.levels_back;
+            this.config_.sizes.outputs = params.outputs;
+            this.config_.sizes.runs = params.runs;
+            this.config_.sizes.generations = params.generations;
+            this.config_.sizes.offsprings = params.offsprings;
+            this.config_.sizes.mutation = params.mutation;
+            if strcmp(params.output_type, 'last')
+                this.config_.last_node_output = true;
+            else
+                this.config_.last_node_output = false;
+            end
+            this.config_.fitness_solution = params.fitness_solution;
+            this.config_.fitness_operator = params.fitness_operator;
+            this.config_.sizes.parameters = 0;
+        end
+    end
+
+    methods (Access = private)
+
+        function configuration_(this)
+            % configureComputedProperties Configure sizes_ and structure_ properties
             %
-            %   Validate the configuration provided
-            %   Initialize the parameters_ to an empty structure
-            %   Define values for multiple properties of the constant structs SIZE_ and CONFIG_
+            %   Configure multiple sizes_ related properties
+            %   Instantiates a Structure object
+            %   Fire the CONFIGURATION callback
             %
             %   Input:
-            %       varargin {struct} struct with 10 fields
-            %           'rows'           {integer} number of rows
-            %           'columns'        {integer} number of columns
-            %           'levels_back'     {integer} number of levels back
-            %           'outputs'        {integer} number of outputs for the problem
-            %           'last_node_output' {bool}    if the outputs are the
-            %           last nodes of the genotype or are nodes randomly
-            %           selected
-            %           'runs'             {integer} number of runs
-            %           'generations'      {integer} number of generations
-            %           'offsprings'       {integer} offsprings size
-            %           'fitness_solution' {integer} minimum fitness for a valid solution
-            %           'fitness_operator' {string} operator to be used for comparision with the solution_fitness
-            %           'mutation'         {integer} probability of mutation
+            %       this {CGP} instante of the class CGP
             %
             %   Examples:
-            %       CGP(struct( ...
-            %           'rows', 1,
-            %           'columns', 16,
-            %           'levels_back', 16,
-            %           'outputs', 1,
-            %           'last_node_output', true,
+            %       cgp.configureComputedProperties_()
+
+            this.config_.sizes.computational_nodes = this.config_.sizes.rows * this.config_.sizes.columns;
+
+            % configure nodes and genes
+            this.config_.sizes.genes_per_node = this.config_.sizes.connection_genes + this.config_.sizes.parameters + 1;
+            this.config_.sizes.genes = this.config_.sizes.computational_nodes * this.config_.sizes.genes_per_node + this.config_.sizes.inputs + this.config_.sizes.outputs;
+            this.config_.sizes.nodes = this.config_.sizes.computational_nodes + this.config_.sizes.inputs;
+
+            % configure genotype
+            this.config_.structure = cgptoolbox.Structure(this.config_.sizes);
+
+            if isfield(this.callbacks_, 'CONFIGURATION')
+                this.callbacks_.CONFIGURATION(struct( ...
+                    'config', this.config_ ...
+                ));
+            end
+        end
+
+        function bool = isValidConstructor_(~, configuration)
+            % validateCGP_ Validate the CGP configuration
+            %
+            %   Validate if the CGP was instantiated with one parameter
+            %   Validate if the CGP was instantiated with one structure
+            %   Validate if the struct has 10 fields
+            %   Validate if the struct has a field named 'rows'
+            %   Validate if the struct has a field named 'columns'
+            %   Validate if the struct has a field named 'levels_back'
+            %   Validate if the struct has a field named 'outputs'
+            %   Validate if the struct has a field named 'last-node-outputs'
+            %   Validate if the struct has a field named 'runs'
+            %   Validate if the struct has a field named 'generations'
+            %   Validate if the struct has a field named 'offsprings'
+            %   Validate if the struct has a field named 'fitness_solution'
+            %   Validate if the struct has a field named 'fitness_operator'
+            %   Validate if the struct has a field named 'mutation'
+            %   Validate if the name field is a string
+            %   Validate if the rows field is a positive integer
+            %   Validate if the columns field is a positive integer
+            %   Validate if the levels_back field is a positive integer
+            %   Validate if the outputs field is a positive integer
+            %   Validate if the runs field is a positive integer
+            %   Validate if the generations field is a positive integer
+            %   Validate if the offsprings field is a positive integer
+            %   Validate if the fitness_solution field is a positive float
+            %   Validate if the fitness_operator is a char
+            %   Validate if the mutation field is a positive float
+            %
+            %   Input:
+            %       this   {CGP} instante of the class CGP
+            %       inputs {struct} struct with CGP configuration
+            %           'rows'             {integer} number of rows
+            %           'columns'          {integer} number of columns
+            %           'levels_back'      {integer} number of levels back
+            %           'outputs'          {integer} number of outputs for the problem
+            %           'last_node_output' {bool} if the outputs are the last nodes
+            %
+            %   Examples:
+            %       cgp.validateCGP_(struct(
             %           'rows', 4,
             %           'columns', 10,
             %           'levels_back', 5,
             %           'outputs', 10
-            %           'fitness_solution', 1,
-            %           'fitness_operator', '>='
+            %           'last_node_output', true,
+            %           'runs', 5,
+            %           'generations', 1000,
+            %           'offsprings', 4,
+            %           'fitness_value', 0.01,
+            %           'fitness_operator', '<=',
+            %           'mutation', 0.1
+            %       ))
+            %
+            %       cgp.validateCGP_(struct(
+            %           'rows', 1,
+            %           'columns', 16,
+            %           'levels_back', 16,
+            %           'outputs', 1,
+            %           'last-node-output', true,
+            %           'runs', 5,
+            %           'generations', 1000,
+            %           'offsprings', 4,
+            %           'fitness_solution', 0.01,
+            %           'fitness_operator', '>',
+            %           'mutation', 0.1
             %       ))
 
-            this.validateCGP_(varargin);
+            bool = true;
 
-            this.parameters_ = struct.empty;
-
-            this.SIZE_.CONNECTION_GENES = 2;
-            this.CONFIG_.generation = 1;
-            this.CONFIG_.iteration = 1;
-            this.CONFIG_.run = 1;
-
-            params = varargin{1};
-            this.SIZE_.ROWS = params.rows;
-            this.SIZE_.COLUMNS = params.columns;
-            this.SIZE_.LEVELS_BACK = params.levels_back;
-            this.SIZE_.OUTPUTS = params.outputs;
-            this.SIZE_.RUNS = params.runs;
-            this.SIZE_.GENERATIONS = params.generations;
-            this.SIZE_.OFFSPRINGS = params.offsprings;
-            this.SIZE_.MUTATION = params.mutation;
-            if strcmp(params.output_type, 'last')
-                this.CONFIG_.last_node_output = true;
-            else
-                this.CONFIG_.last_node_output = false;
+            if length(configuration) ~= 1
+                error('CGP:CGP:CGPOnlyTakesOneInputStructure', 'CGP only takes one input structure.');
             end
-            this.CONFIG_.fitness_solution = params.fitness_solution;
-            this.CONFIG_.fitness_operator = params.fitness_operator;
-            this.SIZE_.PARAMETERS = 0;
+
+            if ~isstruct(configuration{1})
+                error('CGP:CGP:InputMustBeAStructure', 'Input must be a structure.');
+            end
+
+            inputs = configuration{1};
+
+            if length(fieldnames(inputs)) ~= 11
+                error( ...
+                    'CGP:CGP:InvalidSizeOfStructure', ...
+                    '\nPlease configure your CGP with:\n\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n\t%s\n', ...
+                    'problem name: type string', ...
+                    'number of rows: type int', ...
+                    'number of columns: type int', ...
+                    'number of levels_back: type int', ...
+                    'number of outputs: type int' ...
+                    );
+            end
+
+            if ~isfield(inputs, 'output_type')
+                error( ...
+                    'CGP:CGP:MissingLastNodeOutputInStructureInput', ...
+                    '\nPlease provide the node output option.' ...
+                );
+            end
+
+            if ~isfield(inputs, 'rows')
+                error( ...
+                    'CGP:CGP:MissingRowsInStructureInput', ...
+                    '\nPlease provide a number of rows.' ...
+                );
+            end
+
+            if ~isfield(inputs, 'columns')
+                error( ...
+                    'CGP:CGP:MissingColumnsInStructureInput', ...
+                    '\nPlease provide a number of columns.' ...
+                );
+            end
+
+            if ~isfield(inputs, 'levels_back')
+                error( ...
+                    'CGP:CGP:MissingLevelsBackInStructureInput', ...
+                    '\nPlease provide a number of levels back.' ...
+                );
+            end
+
+            if ~isfield(inputs, 'outputs')
+                error( ...
+                    'CGP:CGP:MissingOutputsInStructureInput', ...
+                    '\nPlease provide a number of outputs' ...
+                );
+            end
+
+            % validate rows
+            if (~isa(inputs.rows, 'double') && ~isa(inputs.rows, 'integer')) || round(inputs.rows) ~= inputs.rows
+                error( ...
+                    'CGP:CGP:RowsMustBeAnInteger', ...
+                    '\nRows must be an integer.' ...
+                );
+            end
+
+            if inputs.rows < 1
+                error( ...
+                    'CGP:CGP:RowsMustBePositive', ...
+                    '\nRows must be positive.' ...
+                );
+            end
+
+            % validate columns
+            if (~isa(inputs.columns, 'double') && ~isa(inputs.columns, 'integer')) || round(inputs.columns) ~= inputs.columns
+                error( ...
+                    'CGP:CGP:ColumnsMustBeAnInteger', ...
+                    '\nColumns must be an integer.' ...
+                );
+            end
+
+            if inputs.columns < 1
+                error( ...
+                    'CGP:CGP:ColumnsMustBePositive', ...
+                    '\nColumns must be positive.' ...
+                );
+            end
+
+            % validate levels_back
+            if (~isa(inputs.levels_back, 'double') && ~isa(inputs.levels_back, 'integer')) || round(inputs.levels_back) ~= inputs.levels_back
+                error( ...
+                    'CGP:CGP:LevelsBackMustBeAnInteger', ...
+                    '\nLevels Back must be an integer.' ...
+                );
+            end
+
+            if inputs.levels_back < 1
+                error( ...
+                    'CGP:CGP:LevelsBackMustBePositive', ...
+                    '\nLevelsBack must be positive.' ...
+                );
+            end
+
+                % validate outputs
+            if (~isa(inputs.outputs, 'double') && ~isa(inputs.outputs, 'integer')) || round(inputs.outputs) ~= inputs.outputs
+                error( ...
+                    'CGP:CGP:OutputsMustBeAnInteger', ...
+                    '\nOutputs must be an integer.' ...
+                );
+            end
+
+            if inputs.outputs < 1
+                error( ...
+                    'CGP:CGP:OutputsMustBePositive', ...
+                    '\nOutputs must be positive.' ...
+                );
+            end
+
+            if ~isfield(inputs, 'runs')
+                error( ...
+                    'CGP:Configure:MissingRunsInStructureInput', ...
+                    '\nPlease provide the number of runs.' ...
+                );
+            end
+
+            if ~isfield(inputs, 'generations')
+                error( ...
+                    'CGP:Configure:MissingGenerationsInStructureInput', ...
+                    '\nPlease provide the number of generations.' ...
+                );
+            end
+
+            if ~isfield(inputs, 'offsprings')
+                error( ...
+                    'CGP:Configure:MissingOffspringsInStructureInput', ...
+                    '\nPlease provide the offsprings size.' ...
+                );
+            end
+
+            if ~isfield(inputs, 'mutation')
+                error( ...
+                    'CGP:Configure:MissingMutationInStructureInput', ...
+                    '\nPlease provide the percentage of mutation for each generation.' ...
+                );
+            end
+
+            if ~isfield(inputs, 'fitness_solution')
+                error( ...
+                    'CGP:Configure:MissingMinimumFitnessInStructureInput', ...
+                    '\nPlease provide the threshold for a valid solution.' ...
+                );
+            end
+
+            if ~isfield(inputs, 'fitness_operator')
+                error( ...
+                    'CGP:Configure:MissingGoalFitnessInStructureInput', ...
+                    '\nPlease provide the operator to be used for comparison with the fitness solution.' ...
+                );
+            end
+
+            % validate runs
+            if (~isa(inputs.runs, 'double') && ~isa(inputs.runs, 'integer')) || round(inputs.runs) ~= inputs.runs
+                error( ...
+                    'CGP:Configure:RunsMustBeAnInteger', ...
+                    '\nRuns must be an integer.' ...
+                );
+            end
+
+            if inputs.runs < 1
+                error( ...
+                    'CGP:Configure:RunsMustBePositive', ...
+                    '\nPlease provide a positive number of runs.' ...
+                );
+            end
+
+            % validate generations
+            if (~isa(inputs.generations, 'double') && ~isa(inputs.generations, 'integer')) || round(inputs.generations) ~= inputs.generations
+                error( ...
+                    'CGP:Configure:GenerationsMustBeAnInteger', ...
+                    '\nGenerations must be an integer.' ...
+                );
+            end
+
+            if inputs.generations < 1
+                error( ...
+                    'CGP:Configure:GenerationsMustBePositive', ...
+                    '\nPlease provide a positive number of generations.' ...
+                );
+            end
+
+            % validate offsprings
+            if (~isa(inputs.offsprings, 'double') && ~isa(inputs.offsprings, 'integer')) || round(inputs.offsprings) ~= inputs.offsprings
+                error( ...
+                    'CGP:Configure:OffspringsMustBeAnInteger', ...
+                    '\nOffsprings must be an integer.' ...
+                );
+            end
+
+            if inputs.offsprings < 1
+                error( ...
+                    'CGP:Configure:OffspringsMustBePositive', ...
+                    '\nPlease provide a positive number of offsprings.' ...
+                );
+            end
+
+            % validate mutation
+            if ~isnumeric(inputs.mutation)
+                error( ...
+                    'CGP:Configure:MutationMustBeANumber', ...
+                    '\nMutation must be number.' ...
+                );
+            end
+
+            if inputs.mutation <= 0
+                error( ...
+                    'CGP:Configure:MutationMustBePositive', ...
+                    '\nPlease provide a positive number for mutation.' ...
+                );
+            end
+
+            % validate MinFitness
+            if ~isnumeric(inputs.fitness_solution)
+                error( ...
+                    'CGP:Configure:MinFitnessMustBeANumber', ...
+                    '\nFitness Solution must be number.' ...
+                );
+            end
+
+            % validate GoalFitness
+            if ~ischar(inputs.fitness_operator)
+                error( ...
+                    'CGP:Configure:FitnessOperatorMustBeAChar', ...
+                    '\nGoal Fitness Operator must be a char.' ...
+                );
+            end
+
+            if inputs.fitness_solution <= 0
+                error( ...
+                    'CGP:Configure:MinFitnessMustBePositive', ...
+                    '\nPlease provide a positive fitness value.' ...
+                );
+            end
+        end
+
+        function bool = areValidParameters_(~, params)
+            bool = true;
+
+            for i = 1:length(params)
+                if length(fieldnames(params{i})) ~= 3
+                    error( ...
+                        'CGP:CGP_parameters_ERROR', ...
+                        '\nPlease configure your parameters with a struct:\n\n\t%s\n\t%s\n\t%s\n', ...
+                        'name: type string', ...
+                        'initialize: function handle which creates the initial value of the parameter', ...
+                        'mutate: function handle which mutates the value of the parameter' ...
+                    );
+                end
+            end
         end
     end
 end

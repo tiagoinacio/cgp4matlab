@@ -1,4 +1,4 @@
-function active_ = active(this)
+function active_ = getActiveNodes(this)
     % active Return the active nodes of this genotype
     %
     %   Input:
@@ -7,5 +7,5 @@ function active_ = active(this)
     %   Examples:
     %       genotype.active()
 
-    active_ = this.active_;
+    active_ = this.activeNodes_;
 end

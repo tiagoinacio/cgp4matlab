@@ -10,5 +10,5 @@ function addFitnessFunction(this, fnHandler)
     %   Examples:
     %       cgp.addFitnessFunction(@my-fitness-function)
 
-    this.CONFIG_.fitness_function = fnHandler;
+    this.config_.fitness_function = fnHandler;
 end

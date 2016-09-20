@@ -3,7 +3,7 @@ function addParameters(this, varargin)
     %
     %   Validate the parameters provided
     %   Assign the parameters (varargin) to the parameters_ private propertie
-    %   Assign the number of parameters to the PARAMETERS constant of the SIZE_ struct
+    %   Assign the number of parameters to the parameters constant of the sizes_ struct
     %
     %   Input:
     %       this     {CGP} instante of the class CGP
@@ -37,7 +37,8 @@ function addParameters(this, varargin)
     %
     %      cgp.addParameters(my-first-paremeter-struct, my-second-paremeter-struct, ...)
 
-    this.validateParameters_(varargin);
-    this.parameters_ = varargin;
-    this.SIZE_.PARAMETERS = length(varargin);
+    if this.areValidParameters_(varargin);
+        this.parameters_ = varargin;
+        this.config_.sizes.parameters = length(varargin);
+    end
 end

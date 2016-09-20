@@ -1,4 +1,4 @@
-function fitness_ = fitness(this)
+function fitness_ = getFitness(this)
     % genes Return the fitness of this genotype
     %
     %   Input:
@@ -7,5 +7,5 @@ function fitness_ = fitness(this)
     %   Examples:
     %       mutation.fitness()
 
-    fitness_ = this.fitness_.get();
+    fitness_ = this.fitness_;
 end

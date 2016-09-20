@@ -1,4 +1,4 @@
-function fittest_ = fittest(this)
+function fittest_ = getFittestSolution(this)
     % fittest Return the propertie `fittest_`
     %
     %   Return the private propertie `fittest_`
@@ -9,5 +9,5 @@ function fittest_ = fittest(this)
     %   Examples:
     %       generation.fittest()
 
-    fittest_ = this.fittest_;
+    fittest_ = this.fittestSolution_;
 end

@@ -1,4 +1,4 @@
-function fitness_ = fitness(this)
+function fitness_ = getFitness(this)
     % genes Return the fitness of this genotype
     %
     %   Input:

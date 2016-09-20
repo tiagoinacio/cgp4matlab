@@ -2,7 +2,7 @@ function addInputs(this, varargin)
     % addInputs Add inputs for the problem
     %
     %   Assign the inputs (varargin{1}) to the inputs_ private propertie
-    %   Assign the number of inputs to the INPUTS constant of the SIZE_ struct
+    %   Assign the number of inputs to the inputs constant of the sizes_ struct
     %
     %   Input:
     %       this {CGP} instante of the class CGP
@@ -22,6 +22,6 @@ function addInputs(this, varargin)
     %           ...
     %       ))
 
-    this.SIZE_.INPUTS = length(fieldnames(varargin{1}));
+    this.config_.sizes.inputs = length(fieldnames(varargin{1}));
     this.inputs_ = varargin{1};
 end

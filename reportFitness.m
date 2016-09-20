@@ -1,6 +1,6 @@
-function reportFitness(SIZE, STRUCTURE, genes, active, inputs, fitness, run, generation)
+function reportFitness(sizes, structure, genes, active, inputs, fitness, run, generation)
 
-    formulas = cell(1, SIZE.NODES);
+    formulas = cell(1, sizes.nodes);
     formulas{1} = 'x';
     formulas{2} = [num2str(inputs.scalar)];
     output = active(end);
@@ -8,13 +8,13 @@ function reportFitness(SIZE, STRUCTURE, genes, active, inputs, fitness, run, gen
 
     for i = 3:size(active, 2)
         current_node = active(i);
-        first_connection_array = STRUCTURE.CONNECTIONS{1};
-        second_connection_array = STRUCTURE.CONNECTIONS{2};
+        first_connection_array = structure.connections{1};
+        second_connection_array = structure.connections{2};
         first_connection_index = first_connection_array(current_node);
         second_connection_index = second_connection_array(current_node);
         first_connection_gene = genes(first_connection_index);
         second_connection_gene = genes(second_connection_index);
-        function_index = STRUCTURE.FUNCTIONS(current_node);
+        function_index = structure.functions(current_node);
 
         formula = ['(', num2str(formulas{first_connection_gene})];
         switch genes(function_index);
@@ -53,5 +53,5 @@ function reportFitness(SIZE, STRUCTURE, genes, active, inputs, fitness, run, gen
         catch
         end
     catch
-    end 
+    end
 end

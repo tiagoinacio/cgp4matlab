@@ -1,4 +1,4 @@
-classdef Function
+classdef Functions
     % Function Class
     %   Selects a function from the function-set
     %
@@ -12,22 +12,22 @@ classdef Function
     %       get - get the function index
 
     properties (Access = private)
-        value_
+        functionsGene_
     end
 
     methods (Access = public)
 
-        function this = Function(sizeOfFunctionSet, numberOfFunctions)
+        function this = Functions(vararg)
             % Function Constructor
             %
             %   Input:
-            %       sizeOfFunctionSet {integer} number of functions present in the function-set
-            %       numberOfFunctions {integer} number of functions to generate
+            %       vararg.sizeOfFunctionSet {integer} number of functions present in the function-set
+            %       vararg.numberOfFunctions {integer} number of functions to generate
             %
             %   Examples:
             %       Function(10, 1)
             %       Function(5, 5)
-            this.value_ = randi([1 sizeOfFunctionSet], 1, numberOfFunctions);
+            this.functionsGene_ = randi([1 vararg.sizeOfFunctionSet], 1, vararg.numberOfFunctions);
         end
     end
 end

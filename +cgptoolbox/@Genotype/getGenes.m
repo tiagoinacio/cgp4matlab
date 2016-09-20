@@ -1,11 +1,11 @@
-function genes_ = genes(this)
+function genes_ = getGenes(this)
     % genes Return the array of genes of this genotype
     %
     %   Input:
-    %       this {Mutation} instante of the class
+    %       this {Genotype} instante of the class
     %
     %   Examples:
-    %       mutation.genes()
+    %       genotype.genes()
 
     genes_ = this.genes_;
 end

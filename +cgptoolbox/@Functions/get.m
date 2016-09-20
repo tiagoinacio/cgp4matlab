@@ -9,5 +9,5 @@ function value = get(this)
     %   Examples:
     %       function.get()
 
-    value = this.value_;
+    value = this.functionsGene_;
 end

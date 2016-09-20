@@ -22,23 +22,31 @@ classdef Fitness
 
     methods (Access = public)
 
-        function this = Fitness(CONFIG, SIZE, STRUCTURE, genes, active, inputs, functions)
+        function this = Fitness(vararg)
             % Fitness Fitness Constructor
             %
             %   Input:
-            %       CONFIG    {struct} struct constant with configuration values
-            %       SIZE      {struct} size related struct constant
-            %       STRUCTURE {Structure} struct constant with genes split into sections
+            %       config    {struct} struct constant with configuration values
+            %       sizes      {struct} sizes related struct constant
+            %       structure {Structure} struct constant with genes split into sections
             %       genes     {Array} array of genes, the genotype
             %       active    {Array} array of active nodes
             %       inputs    {Array} inputs of the CGP
             %       functions {Array} array of functions from the function-set
             %
             %   Examples:
-            %       Fitness(CONFIG, SIZE, STRUCTURE, genes, active, inputs, functions)
+            %       Fitness(config, sizes, structure, genes, active, inputs, functions)
 
             % get the fitness value
-            this.fitness_ = CONFIG.fitness_function(SIZE, STRUCTURE, genes, active, inputs, functions, CONFIG.run, CONFIG.generation);
+            this.fitness_ = vararg.fitness_function(struct( ...
+                'config', vararg.config, ...
+                'genes', vararg.genes, ...
+                'activeNodes', vararg.activeNodes, ...
+                'programInputs', vararg.programInputs, ...
+                'functionSet', {vararg.functionSet}, ...
+                'run', vararg.run, ...
+                'generation', vararg.generation ...
+            ));
 
             % check if is a numeric value
             if ~isnumeric(this.fitness_)
