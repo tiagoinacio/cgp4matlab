@@ -61,7 +61,7 @@ classdef Output
                 this.outputNode_ = vararg.numberOfNodes;
             else
                 % assign a random node as the output
-                this.outputNode_ = randi([vararg.numberOfInputs + 1, vararg.numberOfNodes]);
+                this.outputNode_ = randi([1, vararg.numberOfNodes]);
             end
         end
 

@@ -120,7 +120,6 @@ classdef Mutation
             % mutate output
             if (any(gene == structure.programOutputs))
                 newValue = cgptoolbox.Output(struct( ...
-                    'numberOfInputs', sizes.inputs, ...
                     'numberOfNodes', sizes.nodes, ...
                     'shouldBeLastNode', shouldBeLastNode ...
                 )).get();
@@ -195,7 +194,7 @@ classdef Mutation
                 %   each of the connection genes will later be checked for its
                 %   connections
                 for j = 1:sizes.connection_genes
-                    activeNodes_(i + (i * 1) + j - 1) = this.genes_(connections{j}(activeNodes_(i) - sizes.inputs));
+                    activeNodes_(i + (i * 1) + j - 1) = this.genes_(connections{j}(activeNodes_(i)));
                 end
             end
 

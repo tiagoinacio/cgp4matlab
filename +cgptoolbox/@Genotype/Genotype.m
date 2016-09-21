@@ -53,7 +53,7 @@ classdef Genotype < handle
             this.createFunctionGenes_(vararg.config.structure.functionGenes, vararg.config.sizes.functions, vararg.config.sizes.inputs);
             this.createConnectionGenes_(vararg.config.structure, vararg.config.sizes);
             this.createParameters_(vararg.config.sizes, vararg.parameters);
-            this.createProgramOutputs_(vararg.config.sizes.inputs, vararg.config.sizes.genes, vararg.config.sizes.outputs, vararg.config.sizes.nodes, vararg.config.last_node_output);
+            this.createProgramOutputs_(vararg.config.sizes.genes, vararg.config.sizes.outputs, vararg.config.sizes.nodes, vararg.config.last_node_output);
 
             this.activeNodes_ = this.findActiveNodes_(vararg.config.sizes, vararg.config.structure.connectionGenes);
 
@@ -169,7 +169,7 @@ classdef Genotype < handle
             end
         end
         
-        function createProgramOutputs_(this, inputs, genes, outputs, nodes, shouldBeLastNode)
+        function createProgramOutputs_(this, genes, outputs, nodes, shouldBeLastNode)
             % createOutputs_ create the CGP output genes in the genotype
             %
             %   After constructing all the connections, inputs, functions, and parameters,
@@ -191,7 +191,6 @@ classdef Genotype < handle
 
             for i = genes - outputs + 1:genes
                 this.genes_(i) = cgptoolbox.Output(struct( ...
-                    'numberOfInputs', inputs, ...
                     'numberOfNodes', nodes, ...
                     'shouldBeLastNode', shouldBeLastNode ...
                  )).get();

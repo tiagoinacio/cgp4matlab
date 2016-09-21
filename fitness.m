@@ -5,7 +5,7 @@ function score = fitness(args) % sizes, structure, genes, activeNodes, programIn
     % for each data point or test case
     for j = 1:50
         values(1) = args.programInputs.points.x(j);
-        values(2) = args.programInputs.scalar;
+        %values(2) = args.programInputs.scalar;
 
         % iterate through active nodes
         for i = args.config.sizes.inputs + 1:size(args.activeNodes, 2)
@@ -55,9 +55,9 @@ function score = fitness(args) % sizes, structure, genes, activeNodes, programIn
         score = score + abs(values(args.activeNodes(end)) - args.programInputs.points.y(j));
     end
 
-    if score < 0.1
-        reportFitness(args.config.sizes, args.config.structure, args.genes, args.activeNodes, args.programInputs, score, args.run, args.generation);
-    end
+    %if score < 0.1
+        %reportFitness(args.config.sizes, args.config.structure, args.genes, args.activeNodes, args.programInputs, score, args.run, args.generation);
+    %end
 end
 % function score = fitness(sizes, structure, genes, activeNodes, programInputs, functionSet, run, generation)
 % 

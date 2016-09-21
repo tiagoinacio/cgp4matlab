@@ -1,23 +1,23 @@
-function reportFitness(sizes, structure, genes, active, inputs, fitness, run, generation)
+function reportFitness(args)
 
-    formulas = cell(1, sizes.nodes);
+    formulas = cell(1, args.config.sizes.nodes);
     formulas{1} = 'x';
-    formulas{2} = [num2str(inputs.scalar)];
-    output = active(end);
+    %formulas{2} = [num2str(args.programInputs.scalar)];
+    output = args.activeNodes(end);
 
 
-    for i = 3:size(active, 2)
-        current_node = active(i);
-        first_connection_array = structure.connectionGenes{1};
-        second_connection_array = structure.connectionGenes{2};
+    for i = 2:size(args.activeNodes, 2)
+        current_node = args.activeNodes(i);
+        first_connection_array = args.config.structure.connectionGenes{1};
+        second_connection_array = args.config.structure.connectionGenes{2};
         first_connection_index = first_connection_array(current_node);
         second_connection_index = second_connection_array(current_node);
-        first_connection_gene = genes(first_connection_index);
-        second_connection_gene = genes(second_connection_index);
-        function_index = structure.functionGenes(current_node);
+        first_connection_gene = args.genes(first_connection_index);
+        second_connection_gene = args.genes(second_connection_index);
+        function_index = args.config.structure.functionGenes(current_node);
 
         formula = ['(', num2str(formulas{first_connection_gene})];
-        switch genes(function_index);
+        switch args.genes(function_index);
             case 1
                 %if logical(eq(formulas{second_connection_gene}, 0)) || logical(eq(formulas{second_connection_gene},  0))
                 %   formulas{current_node + 2} = '0';
@@ -42,8 +42,8 @@ function reportFitness(sizes, structure, genes, active, inputs, fitness, run, ge
         str = eval(formulas{output})
 
         generationFigure = figure;
-        set(generationFigure, 'name', ['Generation (', num2str(run), ')'],'numbertitle','off');
-        scatter(inputs.points.x, inputs.points.y);
+        set(generationFigure, 'name', ['Run (', num2str(args.run), ')'],'numbertitle','off');
+        scatter(args.programInputs.points.x, args.programInputs.points.y);
 
         hold on;
         try
