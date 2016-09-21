@@ -30,12 +30,33 @@ function score = fitness(args) % sizes, structure, genes, activeNodes, programIn
             firstConnection = values(nodeFirstConnection);
             secondConnection = values(nodeSecondConnection);
 
+            % find how many genes per node
+            genesPerNode = 3 + args.config.sizes.parameters;
+
+            % find how many nodes are before the current node in the genotype
+            numberOfNodes = currentActiveNode - args.config.sizes.inputs;
+
+            % genes of the active node
+            lastParameter = numberOfNodes * genesPerNode + args.config.sizes.inputs;
+
+            % gene of the first parameter
+            firstParameter = lastParameter - args.config.sizes.parameters + 1;
+
+            allParameters = firstParameter:lastParameter;
+            for k = 1:size(allParameters, 2)
+                parameters(k) = args.genes(allParameters(k));
+            end
+
             % call the function which index is given by currentFunctionGene
             values(currentActiveNode) = args.functionSet{currentFunctionGene}(firstConnection, secondConnection);
         end
-
+        
         % compute the sum of squared error
-        score = score + (values(args.activeNodes(end)) - args.programInputs.points.y(j))^2;
+        score = score + abs(values(args.activeNodes(end)) - args.programInputs.points.y(j));
+    end
+
+    if score < 0.1
+        reportFitness(args.config.sizes, args.config.structure, args.genes, args.activeNodes, args.programInputs, score, args.run, args.generation);
     end
 end
 % function score = fitness(sizes, structure, genes, activeNodes, programInputs, functionSet, run, generation)

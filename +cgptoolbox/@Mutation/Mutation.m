@@ -70,9 +70,9 @@ classdef Mutation
             % assign the active nodes
             this.activeNodes_ = this.findActiveNodes_(vararg.config.sizes, vararg.config.structure.connectionGenes);
 
-            if isequal(this.activeNodes_, vararg.fittestSolution.getActiveNodes())
-                this.fitness_ = vararg.fittestSolution.getFitness();
-            else
+            %if isequal(this.activeNodes_, vararg.fittestSolution.getActiveNodes())
+            %    this.fitness_ = vararg.fittestSolution.getFitness();
+            %else
                 % assign the fitness for this solution
                 this.fitness_ = cgptoolbox.Fitness(struct( ...
                     'fitness_function', vararg.config.fitness_function, ...
@@ -84,7 +84,7 @@ classdef Mutation
                     'run', vararg.config.run, ...
                     'generation', vararg.config.generation ...
                 )).get();
-            end
+            %end
 
             % fire the GENOTYPE_MUTATED callback
             if isfield(vararg.callbacks, 'GENOTYPE_MUTATED')

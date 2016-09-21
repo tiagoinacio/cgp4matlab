@@ -8,13 +8,13 @@ function reportFitness(sizes, structure, genes, active, inputs, fitness, run, ge
 
     for i = 3:size(active, 2)
         current_node = active(i);
-        first_connection_array = structure.connections{1};
-        second_connection_array = structure.connections{2};
+        first_connection_array = structure.connectionGenes{1};
+        second_connection_array = structure.connectionGenes{2};
         first_connection_index = first_connection_array(current_node);
         second_connection_index = second_connection_array(current_node);
         first_connection_gene = genes(first_connection_index);
         second_connection_gene = genes(second_connection_index);
-        function_index = structure.functions(current_node);
+        function_index = structure.functionGenes(current_node);
 
         formula = ['(', num2str(formulas{first_connection_gene})];
         switch genes(function_index);
