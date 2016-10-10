@@ -49,15 +49,15 @@ classdef Structure < handle
             %
 
             this.setProgramInputs_(vararg.inputs);
-            this.setConnectionGenes_(vararg.inputs, vararg.genes, vararg.genes_per_node, vararg.connection_genes);
-            this.setParameters_(vararg.inputs, vararg.genes, vararg.genes_per_node, vararg.connection_genes, vararg.computational_nodes, vararg.parameters);
-            this.setFunctionGenes_(vararg.genes, vararg.genes_per_node, vararg.inputs);
-            this.setProgramOutputs_(vararg.inputs, vararg.genes, vararg.genes_per_node, vararg.computational_nodes);
+            this.setConnectionGenes_(vararg.genes, vararg.genes_per_node, vararg.connection_genes);
+            this.setParameters_(vararg.genes, vararg.genes_per_node, vararg.connection_genes, vararg.computational_nodes, vararg.parameters);
+            this.setFunctionGenes_(vararg.genes, vararg.genes_per_node);
+            this.setProgramOutputs_(vararg.genes, vararg.genes_per_node, vararg.computational_nodes);
         end
     end
 
     methods (Access = private)
-        function setConnectionGenes_(this, programInputs, genes, genes_per_node, connection_genes)
+        function setConnectionGenes_(this, genes, genes_per_node, connection_genes)
             % setConnectionGenes_ Setup the connection genes array
             %
             %   Input:
@@ -77,15 +77,14 @@ classdef Structure < handle
 
             for i = 1:connection_genes
                 this.connectionGenes{i} = sort([ ...
-                    1:programInputs, ...
-                    programInputs + i + 1 : ...
+                    i + 1 : ...
                     genes_per_node : ...
                     genes ...
                 ]);
             end
         end
 
-        function setFunctionGenes_(this, genes, genes_per_node, programInputs)
+        function setFunctionGenes_(this, genes, genes_per_node)
             % setFunctionGenes_ Setup the function genes array
             %
             %   Input:
@@ -99,8 +98,7 @@ classdef Structure < handle
             %       structure.setFunctionGenes_(40, 6, 2)
 
             this.functionGenes = [ ...
-                1:programInputs, ...
-                programInputs + 1:genes_per_node:genes - 1 ...
+                1:genes_per_node:genes - 1 ...
             ];
         end
 
@@ -118,7 +116,7 @@ classdef Structure < handle
             this.programInputs = 1:programInputs;
         end
 
-        function setProgramOutputs_(this, programInputs, genes, genes_per_node, computational_nodes)
+        function setProgramOutputs_(this, genes, genes_per_node, computational_nodes)
             % setProgramOutputs_ Setup the output genes array
             %
             %   Input:
@@ -132,10 +130,10 @@ classdef Structure < handle
             %       structure.setProgramOutputs_(4)
             %       structure.setProgramOutputs_(2)
 
-            this.programOutputs = genes - (genes - (programInputs + (genes_per_node * computational_nodes)) - 1):genes;
+            this.programOutputs = genes - (genes - (genes_per_node * computational_nodes) - 1):genes;
         end
 
-        function setParameters_(this, programInputs, genes, genes_per_node, connection_genes, computational_nodes, parameters)
+        function setParameters_(this, genes, genes_per_node, connection_genes, computational_nodes, parameters)
             % setParameters_ Setup the parameter genes array
             %
             %   Input:
@@ -159,14 +157,14 @@ classdef Structure < handle
             for j = 1:parameters
                 parameters_ = [ ...
                     parameters_, ...
-                    programInputs + connection_genes  + j + 1 : ...
+                    connection_genes  + j + 1 : ...
                     genes_per_node : ...
                     genes ...
                 ];
 
                 vector = [ ...
                     this.parameters(j), ...
-                    programInputs + connection_genes  + j + 1 : ...
+                    connection_genes  + j + 1 : ...
                     genes_per_node : ...
                     genes ...
                 ];

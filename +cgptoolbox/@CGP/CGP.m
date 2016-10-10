@@ -63,7 +63,7 @@ classdef CGP < handle
 
             % configure nodes and genes
             this.config_.sizes.genes_per_node = this.config_.sizes.connection_genes + this.config_.sizes.parameters + 1;
-            this.config_.sizes.genes = this.config_.sizes.computational_nodes * this.config_.sizes.genes_per_node + this.config_.sizes.inputs + this.config_.sizes.outputs;
+            this.config_.sizes.genes = this.config_.sizes.computational_nodes * this.config_.sizes.genes_per_node + this.config_.sizes.outputs;
             this.config_.sizes.nodes = this.config_.sizes.computational_nodes + this.config_.sizes.inputs;
 
             % configure genotype

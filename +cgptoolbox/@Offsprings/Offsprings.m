@@ -1,4 +1,4 @@
-classdef Offsprings
+classdef Offsprings < handle
     % Offsprings Class
     %   Create initial offsprings of solutions
     %
@@ -16,6 +16,7 @@ classdef Offsprings
     %       fittest   {public} get the fittest solution of the offsprings
 
     properties (Access = private)
+        configuration_
         candidateSolutions_
         fittestSolution_
     end
@@ -39,38 +40,7 @@ classdef Offsprings
             %   Examples:
             %       Genotype(config, sizes, structure, inputs, functions, parametes)
 
-            % create one genotype
-            this.fittestSolution_ = cgptoolbox.Genotype(vararg);
-
-            % create the rest of the genotypes
-            for i = 1:vararg.config.sizes.offsprings - 1
-                this.candidateSolutions_{i} = cgptoolbox.Genotype(vararg);
-
-                absolute_value = this.candidateSolutions_{i}.getFitness();
-                fitness_solution = this.fittestSolution_.getFitness();
-                switch vararg.config.fitness_operator
-                    case '>='
-                        if absolute_value >= fitness_solution
-                            this.fittestSolution_ = this.candidateSolutions_{i};
-                        end
-                    case '<='
-                        if absolute_value <= fitness_solution
-                            this.fittestSolution_ = this.candidateSolutions_{i};
-                        end
-                    case '>'
-                        if absolute_value > fitness_solution
-                            this.fittestSolution_ = this.candidateSolutions_{i};
-                        end
-                    case '<'
-                        if absolute_value < fitness_solution
-                            this.fittestSolution_ = this.candidateSolutions_{i};
-                        end
-                    otherwise
-                        if absolute_value >= fitness_solution
-                            this.fittestSolution_ = this.candidateSolutions_{i};
-                        end
-                end
-            end
+            this.configuration_ = vararg;
         end
 
     end

@@ -20,5 +20,7 @@ function solutions_ = run(this)
         'callbacks', this.callbacks_ ...
     ));
 
+    ea_.run();
+
     solutions_ = ea_.getSolutions();
 end

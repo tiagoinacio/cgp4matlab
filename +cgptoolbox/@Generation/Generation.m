@@ -1,8 +1,9 @@
-classdef Generation
+classdef Generation < handle
     % Generation Class
     %   Run a Generation
 
     properties (Access = private)
+        configuration_
         fittestSolution_
     end
 
@@ -10,42 +11,9 @@ classdef Generation
 
         function this = Generation(vararg)
 
+            this.configuration_ = vararg;
             this.fittestSolution_ = vararg.fittestSolution;
 
-            % for each offspring mutate and generate new solutions
-            for i = 1:vararg.config.sizes.offsprings
-
-                if isfield(vararg.callbacks, 'NEW_SOLUTION_IN_GENERATION')
-                    vararg.callbacks.NEW_SOLUTION_IN_GENERATION(struct( ...
-                        'name', 'NEW_SOLUTION_IN_GENERATION', ...
-                        'offspringIndex', i, ...
-                        'generation', vararg.config.generation, ...
-                        'genes', this.fittestSolution_.getGenes(), ...
-                        'fitness', this.fittestSolution_.getFitness(), ...
-                        'activeNodes', this.fittestSolution_.getActiveNodes() ...
-                    ));
-                end
-
-                solution = cgptoolbox.Mutation(vararg);
-
-                % if the solution generated is better than the previous, update the fittest solution
-                if (this.isThisSolutionFitterThanParent_(solution.getFitness(), vararg.config.fitness_operator))
-                    if isfield(vararg.callbacks, 'FITTEST_SOLUTION_OF_GENERATION')
-                        vararg.callbacks.FITTEST_SOLUTION_OF_GENERATION(struct( ...
-                            'name', 'FITTEST_SOLUTION_OF_GENERATION', ...
-                            'offspringIndex', i, ...
-                            'generation', vararg.config.generation, ...
-                            'genes', this.fittestSolution_.getGenes(), ...
-                            'fitness', this.fittestSolution_.getFitness(), ...
-                            'activeNodes', this.fittestSolution_.getActiveNodes() ...
-                        ));
-                    end
-
-                    this.fittestSolution_ = solution;
-                    vararg.fittestSolution = solution;
-                end
-
-            end
         end
     end
     

@@ -15,7 +15,7 @@ classdef Output
     %       validateParameters_ {private} validate the Output parameters
 
     properties (Access = private)
-        outputNode_
+        configuration_
     end
 
     methods (Access = public)
@@ -55,14 +55,8 @@ classdef Output
             else
                 vararg.shouldBeLastNode = false;
             end
-
-            if vararg.shouldBeLastNode
-                % assign the output to the last node of the genotype
-                this.outputNode_ = vararg.numberOfNodes;
-            else
-                % assign a random node as the output
-                this.outputNode_ = randi([1, vararg.numberOfNodes]);
-            end
+            
+            this.configuration_ = vararg;
         end
 
     end

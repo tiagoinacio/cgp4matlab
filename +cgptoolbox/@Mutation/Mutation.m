@@ -1,4 +1,4 @@
-classdef Mutation
+classdef Mutation < handle
     % Mutation Class
     %   Mutate a genotype
     %
@@ -24,6 +24,7 @@ classdef Mutation
     %       mutate                   {private} create the function genes
 
     properties (Access = private)
+        configuration_
         activeNodes_
         genes_
         fitness_
@@ -46,50 +47,9 @@ classdef Mutation
             %
             %   Examples:
             %       Genotype(config, sizes, structure, inputs, functions, parameters)
-
-            % store the initial genotype
-            this.genes_ = vararg.fittestSolution.getGenes();
-
-            % initialize empty array for mutated genes
-            if isfield(vararg.callbacks, 'GENOTYPE_MUTATED')
-                genesMutated = 1:vararg.config.sizes.genes;
-            end
-
-            for i = vararg.config.sizes.inputs + 1:vararg.config.sizes.genes
-                if rand() <= vararg.config.sizes.mutation
-                    % store the mutated genes
-                    if isfield(vararg.callbacks, 'GENOTYPE_MUTATED')
-                        genesMutated(i) = i;
-                    end
-
-                    % mutate
-                    this.genes_(i) = this.mutate_(vararg.config.sizes, vararg.config.structure, i, vararg.parameters, vararg.config.last_node_output);
-                end
-            end
-
-            % assign the active nodes
-            this.activeNodes_ = this.findActiveNodes_(vararg.config.sizes, vararg.config.structure.connectionGenes);
-
-            %if isequal(this.activeNodes_, vararg.fittestSolution.getActiveNodes())
-            %    this.fitness_ = vararg.fittestSolution.getFitness();
-            %else
-                % assign the fitness for this solution
-                this.fitness_ = cgptoolbox.Fitness(struct( ...
-                    'fitness_function', vararg.config.fitness_function, ...
-                    'config', vararg.config, ...
-                    'genes', this.genes_, ...
-                    'activeNodes', this.activeNodes_, ...
-                    'programInputs', vararg.programInputs, ...
-                    'functionSet', {vararg.functionSet}, ...
-                    'run', vararg.config.run, ...
-                    'generation', vararg.config.generation ...
-                )).get();
-            %end
-
-            % fire the GENOTYPE_MUTATED callback
-            if isfield(vararg.callbacks, 'GENOTYPE_MUTATED')
-                vararg.callbacks.GENOTYPE_MUTATED(vararg.fittestSolution.getGenes(), this.genes_, genesMutated);
-            end
+            
+            this.configuration_ = vararg;
+            
         end
     end
     
@@ -122,8 +82,7 @@ classdef Mutation
                 newValue = cgptoolbox.Output(struct( ...
                     'numberOfNodes', sizes.nodes, ...
                     'shouldBeLastNode', shouldBeLastNode ...
-                )).get();
-                %gene = gene - 1;
+                )).createOutput();
                 return;
             end
 
@@ -132,7 +91,7 @@ classdef Mutation
                 newValue = cgptoolbox.Connection(struct( ...
                         'sizes', sizes, ...
                         'geneIndex', gene ...
-                    )).get();
+                    )).createConnection();
                 return;
             end
 
@@ -150,7 +109,7 @@ classdef Mutation
             newValue = cgptoolbox.Functions(struct( ...
                 'sizeOfFunctionSet', sizes.functions, ...
                 'numberOfFunctions', 1 ...
-            )).get();
+            )).createFunctions();
         end
         
         function activeNodes_ = findActiveNodes_(this, sizes, connections)
@@ -185,7 +144,7 @@ classdef Mutation
                 % if the last nodes to check are all inputs, break the for loop
                 % because we already know all the active nodes (including the
                 % inputs)
-                if all(activeNodes_(i:end) <=  sizes.inputs)
+                if all(activeNodes_(i:end) <= sizes.inputs)
                     break;
                 end
 
@@ -194,7 +153,7 @@ classdef Mutation
                 %   each of the connection genes will later be checked for its
                 %   connections
                 for j = 1:sizes.connection_genes
-                    activeNodes_(i + (i * 1) + j - 1) = this.genes_(connections{j}(activeNodes_(i)));
+                    activeNodes_(i + (i * 1) + j - 1) = this.genes_(connections{j}(activeNodes_(i) - sizes.inputs));
                 end
             end
 

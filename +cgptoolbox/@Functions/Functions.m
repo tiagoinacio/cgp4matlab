@@ -12,7 +12,7 @@ classdef Functions
     %       get - get the function index
 
     properties (Access = private)
-        functionsGene_
+        configuration_
     end
 
     methods (Access = public)
@@ -27,7 +27,7 @@ classdef Functions
             %   Examples:
             %       Function(10, 1)
             %       Function(5, 5)
-            this.functionsGene_ = randi([1 vararg.sizeOfFunctionSet], 1, vararg.numberOfFunctions);
+            this.configuration_ = vararg;
         end
     end
 end

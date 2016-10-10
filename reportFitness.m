@@ -6,15 +6,15 @@ function reportFitness(args)
     output = args.activeNodes(end);
 
 
-    for i = 2:size(args.activeNodes, 2)
+    for i = args.config.sizes.inputs + 1:size(args.activeNodes, 2)
         current_node = args.activeNodes(i);
         first_connection_array = args.config.structure.connectionGenes{1};
         second_connection_array = args.config.structure.connectionGenes{2};
-        first_connection_index = first_connection_array(current_node);
-        second_connection_index = second_connection_array(current_node);
+        first_connection_index = first_connection_array(current_node - args.config.sizes.inputs);
+        second_connection_index = second_connection_array(current_node - args.config.sizes.inputs);
         first_connection_gene = args.genes(first_connection_index);
         second_connection_gene = args.genes(second_connection_index);
-        function_index = args.config.structure.functionGenes(current_node);
+        function_index = args.config.structure.functionGenes(current_node - args.config.sizes.inputs);
 
         formula = ['(', num2str(formulas{first_connection_gene})];
         switch args.genes(function_index);

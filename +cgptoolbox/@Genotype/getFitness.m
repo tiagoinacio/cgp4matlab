@@ -7,5 +7,5 @@ function fitness_ = getFitness(this)
     %   Examples:
     %       genotype.fitness()
 
-    fitness_ = this.fitness_.get();
+    fitness_ = this.fitness_.getFitness();
 end

@@ -1,4 +1,4 @@
-classdef Connection
+classdef Connection < handle
     % Connection Class
     %   Creates a connection input for the current node
     %
@@ -20,6 +20,7 @@ classdef Connection
     %       Connection(sizes, 10)
 
     properties (Access = private)
+        configuration_
         newConnection_
         nodeIndex_
         possibleConnections_
@@ -55,14 +56,12 @@ classdef Connection
             %       'genes_per_node', 3,
             %   ), 8)
 
-            this.nodeIndex_ = this.findWhichNodeBelongs_(vararg.sizes, vararg.geneIndex);
-            this.possibleConnections_ = this.findPossibleConnections_(vararg.sizes);
-            this.newConnection_ = this.possibleConnections_(randi(size(this.possibleConnections_, 2)));
+            this.configuration_ = vararg;
         end
     end
     
     methods (Access = private)
-        function connections = findPossibleConnections_(this, sizes)
+        function connections = findPossibleConnections_(this)
             % findPossibleConnections_ Find all nodes before the current one, plus the inputs for the CGP
             %
             %   Given a specific node form the genotype, get a list of all possible node connections
@@ -98,12 +97,12 @@ classdef Connection
             %       ))
 
             % instantiates a vector with the levels back sizes
-            connections = zeros(1, sizes.levels_back);
+            connections = zeros(1, this.configuration_.sizes.levels_back);
 
             % iterate through possible node connections
             i = 1;
-            for j = this.nodeIndex_ - sizes.rows:-sizes.rows:sizes.inputs
-                if i > sizes.levels_back
+            for j = this.nodeIndex_ - this.configuration_.sizes.rows:-this.configuration_.sizes.rows:this.configuration_.sizes.inputs
+                if i > this.configuration_.sizes.levels_back
                     break;
                 end
                 connections(i) = j;
@@ -112,13 +111,13 @@ classdef Connection
 
             % if there are any node connections, initialize the j propertie
             if isempty(j)
-                j = this.nodeIndex_ - sizes.rows;
+                j = this.nodeIndex_ - this.configuration_.sizes.rows;
             end
 
             % if the levels back value wasn't reached, fill in with the node inputs
-            if j <= sizes.levels_back
-                for j = sizes.inputs:-1:1
-                    if i > sizes.levels_back
+            if j <= this.configuration_.sizes.levels_back
+                for j = this.configuration_.sizes.inputs:-1:1
+                    if i > this.configuration_.sizes.levels_back
                         break;
                     end
                     connections(i) = j;
@@ -134,7 +133,7 @@ classdef Connection
             connections = connections(difference~=0);
         end
         
-        function node = findWhichNodeBelongs_(~, sizes, gene)
+        function node = findWhichNodeBelongs_(this)
             % findWhichNodeBelongs_ Find the node which a given gene belongs to
             %
             %   Given a specific gene, find which node belongs to
@@ -160,7 +159,7 @@ classdef Connection
             %           'genes_per_node', 3
             %       ), 5)
 
-            node = ceil((gene - sizes.inputs) / sizes.genes_per_node) + sizes.inputs;
+            node = ceil(this.configuration_.geneIndex / this.configuration_.sizes.genes_per_node);
         end
 
 

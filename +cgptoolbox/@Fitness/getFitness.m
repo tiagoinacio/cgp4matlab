@@ -1,13 +1,13 @@
-function value = get(this)
+function value = getFitness(this)
     % get Return the propertie `value`
     %
     %   Return the private propertie `value_`
     %
     %   Input:
-    %       this {Function} instante of the class
+    %       this {Fitness} instante of the class
     %
     %   Examples:
-    %       function.get()
+    %       fitness.get()
 
-    value = this.functionsGene_;
+    value = this.fitness_;
 end

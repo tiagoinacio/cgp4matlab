@@ -1,88 +1,34 @@
-classdef Run
+classdef Run < handle
     %RUN Summary of this class goes here
     %   Detailed explanation goes here
     
     properties (Access = private)
+        configuration_
         fitnessOfAllGenerations_ 
         fittestSolution_
     end
     
     methods (Access = public)
         
-        function this = Run(vararg)
-            
-            this.fittestSolution_ = cgptoolbox.Offsprings(struct( ...
-                'config', vararg.config, ...
-                'programInputs', vararg.programInputs, ...
-                'functionSet', {vararg.functionSet}, ...
-                'parameters', {vararg.parameters} ...
-            )).getFittestSolution();
-        
-            this.fitnessOfAllGenerations_ = zeros(1, vararg.config.sizes.generations);
-            vararg.fittestSolution = this.fittestSolution_;
-
-            while this.solutionNotFound_(vararg.config.fitness_solution, vararg.config.fitness_operator) && this.maxGenerationNotReached_(vararg.config.generation, vararg.config.sizes.generations)
-
-                % create new generation
-                generation = cgptoolbox.Generation(vararg);
-
-                % assign best fit individual to parent
-                this.fittestSolution_ = generation.getFittestSolution();
-                
-                % assign fitness for this generation
-                this.fitnessOfAllGenerations_(vararg.config.generation) = this.fittestSolution_.getFitness();
-
-                genes = this.fittestSolution_.getGenes();
-                activeNodes = this.fittestSolution_.getActiveNodes();
-
-                if isfield(vararg.callbacks, 'FITTEST_SOLUTION')
-                    if vararg.config.generation - 1 ~= 0
-                        if strcmp(vararg.config.fitness_operator, '<=') || strcmp(vararg.config.fitness_operator, '<')
-                            if this.fitnessOfAllGenerations_(vararg.config.generation) < this.fitnessOfAllGenerations_(vararg.config.generation - 1)
-                                this.fireCallback_('FITTEST_SOLUTION', vararg, activeNodes, genes);
-                            end
-                        elseif strcmp(vararg.config.fitness_operator, '>=') || strcmp(vararg.config.fitness_operator, '>')
-                            if this.fitnessOfAllGenerations_(vararg.config.generation) > this.fitnessOfAllGenerations_(vararg.config.generation - 1)
-                                this.fireCallback_('FITTEST_SOLUTION', vararg, activeNodes, genes);
-                            end
-                        end
-                    end
-                end
-
-                if isfield(vararg.callbacks, 'NEW_GENERATION')
-                    vararg.callbacks.NEW_GENERATION(struct(            ...
-                        'name', 'NEW_GENERATION',                ...
-                        'generation', vararg.config.generation,                ...
-                        'run', vararg.config.run,                       ...
-                        'fitness', this.fitnessOfAllGenerations_(vararg.config.generation), ...
-                        'functionSet', {vararg.config.function_set},             ...
-                        'activeNodes', activeNodes,                          ...
-                        'genes', genes,                           ...
-                        'structure', vararg.config.structure ...
-                    ));
-                end
-
-                vararg.config.generation = vararg.config.generation + 1;
-                vararg.fittestSolution = this.fittestSolution_;
-            end
-            
-            this.fitnessOfAllGenerations_(vararg.config.generation) = this.fittestSolution_.getFitness();
+        function this = Run(vararg)            
+            this.configuration_ = vararg;
+            this.fitnessOfAllGenerations_ = zeros(1, this.configuration_.config.sizes.generations);
         end 
         
     end
     
     methods (Access = private)
         
-        function fireCallback_(this, callback, vararg, activeNodes, genes)
-            vararg.callbacks.FITTEST_SOLUTION(struct(            ...
+        function fireCallback_(this, callback, activeNodes, genes)
+            this.configuration_.callbacks.FITTEST_SOLUTION(struct(            ...
                 'name', callback,                ...
-                'generation', vararg.config.generation,                ...
-                'run', vararg.config.run,                       ...
-                'fitness', this.fitnessOfAllGenerations_(vararg.config.generation), ...
-                'functionSet', {vararg.config.function_set},             ...
+                'generation', this.configuration_.config.generation,                ...
+                'run', this.configuration_.config.run,                       ...
+                'fitness', this.fitnessOfAllGenerations_(this.configuration_.config.generation), ...
+                'functionSet', {this.configuration_.config.function_set},             ...
                 'activeNodes', activeNodes,                          ...
                 'genes', genes,                           ...
-                'structure', vararg.config.structure             ...
+                'structure', this.configuration_.config.structure             ...
             ));
         end
         
