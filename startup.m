@@ -1,2 +1,1 @@
-addpath('../../')
-addpath('./function-set')
+addpath(genpath('.'))
