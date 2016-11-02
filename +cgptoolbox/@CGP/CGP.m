@@ -31,7 +31,7 @@ classdef CGP < handle
             this.config_.sizes.outputs = params.outputs;
             this.config_.sizes.runs = params.runs;
             this.config_.sizes.generations = params.generations;
-            this.config_.sizes.offsprings = params.offsprings;
+            this.config_.sizes.offspring = params.offspring;
             this.config_.sizes.mutation = params.mutation;
             if strcmp(params.output_type, 'last')
                 this.config_.last_node_output = true;
@@ -89,7 +89,7 @@ classdef CGP < handle
             %   Validate if the struct has a field named 'last-node-outputs'
             %   Validate if the struct has a field named 'runs'
             %   Validate if the struct has a field named 'generations'
-            %   Validate if the struct has a field named 'offsprings'
+            %   Validate if the struct has a field named 'offspring'
             %   Validate if the struct has a field named 'fitness_solution'
             %   Validate if the struct has a field named 'fitness_operator'
             %   Validate if the struct has a field named 'mutation'
@@ -100,7 +100,7 @@ classdef CGP < handle
             %   Validate if the outputs field is a positive integer
             %   Validate if the runs field is a positive integer
             %   Validate if the generations field is a positive integer
-            %   Validate if the offsprings field is a positive integer
+            %   Validate if the offspring field is a positive integer
             %   Validate if the fitness_solution field is a positive float
             %   Validate if the fitness_operator is a char
             %   Validate if the mutation field is a positive float
@@ -123,7 +123,7 @@ classdef CGP < handle
             %           'last_node_output', true,
             %           'runs', 5,
             %           'generations', 1000,
-            %           'offsprings', 4,
+            %           'offspring', 4,
             %           'fitness_value', 0.01,
             %           'fitness_operator', '<=',
             %           'mutation', 0.1
@@ -137,7 +137,7 @@ classdef CGP < handle
             %           'last-node-output', true,
             %           'runs', 5,
             %           'generations', 1000,
-            %           'offsprings', 4,
+            %           'offspring', 4,
             %           'fitness_solution', 0.01,
             %           'fitness_operator', '>',
             %           'mutation', 0.1
@@ -276,10 +276,10 @@ classdef CGP < handle
                 );
             end
 
-            if ~isfield(inputs, 'offsprings')
+            if ~isfield(inputs, 'offspring')
                 error( ...
-                    'CGP:Configure:MissingOffspringsInStructureInput', ...
-                    '\nPlease provide the offsprings size.' ...
+                    'CGP:Configure:MissingOffspringInStructureInput', ...
+                    '\nPlease provide the offspring size.' ...
                 );
             end
 
@@ -334,18 +334,18 @@ classdef CGP < handle
                 );
             end
 
-            % validate offsprings
-            if (~isa(inputs.offsprings, 'double') && ~isa(inputs.offsprings, 'integer')) || round(inputs.offsprings) ~= inputs.offsprings
+            % validate offspring
+            if (~isa(inputs.offspring, 'double') && ~isa(inputs.offspring, 'integer')) || round(inputs.offspring) ~= inputs.offspring
                 error( ...
-                    'CGP:Configure:OffspringsMustBeAnInteger', ...
-                    '\nOffsprings must be an integer.' ...
+                    'CGP:Configure:OffspringMustBeAnInteger', ...
+                    '\nOffspring must be an integer.' ...
                 );
             end
 
-            if inputs.offsprings < 1
+            if inputs.offspring < 1
                 error( ...
-                    'CGP:Configure:OffspringsMustBePositive', ...
-                    '\nPlease provide a positive number of offsprings.' ...
+                    'CGP:Configure:OffspringMustBePositive', ...
+                    '\nPlease provide a positive number of offspring.' ...
                 );
             end
 

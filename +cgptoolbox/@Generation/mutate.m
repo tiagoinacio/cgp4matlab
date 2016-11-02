@@ -1,6 +1,6 @@
 function mutate(this)
     % for each offspring mutate and generate new solutions
-    for i = 1:this.configuration_.config.sizes.offsprings
+    for i = 1:this.configuration_.config.sizes.offspring
 
         if isfield(this.configuration_.callbacks, 'NEW_SOLUTION_IN_GENERATION')
             this.configuration_.callbacks.NEW_SOLUTION_IN_GENERATION(struct( ...
