@@ -50,8 +50,8 @@ classdef Structure < handle
 
             this.setProgramInputs_(vararg.inputs);
             this.setConnectionGenes_(vararg.genes, vararg.genes_per_node, vararg.connection_genes);
-            this.setParameters_(vararg.genes, vararg.genes_per_node, vararg.connection_genes, vararg.computational_nodes, vararg.parameters);
-            this.setFunctionGenes_(vararg.genes, vararg.genes_per_node);
+            this.setParameters_(vararg.genes, vararg.genes_per_node, vararg.connection_genes, vararg.computational_nodes, vararg.parameters, vararg.outputs);
+            this.setFunctionGenes_(vararg.genes, vararg.genes_per_node, vararg.outputs);
             this.setProgramOutputs_(vararg.genes, vararg.genes_per_node, vararg.computational_nodes);
         end
     end
@@ -84,7 +84,7 @@ classdef Structure < handle
             end
         end
 
-        function setFunctionGenes_(this, genes, genes_per_node)
+        function setFunctionGenes_(this, genes, genes_per_node, outputs)
             % setFunctionGenes_ Setup the function genes array
             %
             %   Input:
@@ -98,7 +98,7 @@ classdef Structure < handle
             %       structure.setFunctionGenes_(40, 6, 2)
 
             this.functionGenes = [ ...
-                1:genes_per_node:genes - 1 ...
+                1:genes_per_node:genes - outputs ...
             ];
         end
 
@@ -133,7 +133,7 @@ classdef Structure < handle
             this.programOutputs = genes - (genes - (genes_per_node * computational_nodes) - 1):genes;
         end
 
-        function setParameters_(this, genes, genes_per_node, connection_genes, computational_nodes, parameters)
+        function setParameters_(this, genes, genes_per_node, connection_genes, computational_nodes, parameters, program_outputs)
             % setParameters_ Setup the parameter genes array
             %
             %   Input:
@@ -152,27 +152,16 @@ classdef Structure < handle
             end
 
             this.parameters = zeros(parameters, parameters * computational_nodes / parameters);
-            parameters_ = zeros();
-
             for j = 1:parameters
-                parameters_ = [ ...
-                    parameters_, ...
-                    connection_genes  + j + 1 : ...
-                    genes_per_node : ...
-                    genes ...
-                ];
-
                 vector = [ ...
                     this.parameters(j), ...
                     connection_genes  + j + 1 : ...
                     genes_per_node : ...
-                    genes ...
+                    genes - program_outputs ...
                 ];
 
                 this.parameters(j,:) = vector(2:end);
             end
-
-            %parameters_ = sort(this.parameters(2:end));
         end
     end
 end
